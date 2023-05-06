@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["public/js", "node_modules", "src/development"],
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "sourceMap": false
+  }
+}
