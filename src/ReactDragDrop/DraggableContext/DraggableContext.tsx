@@ -2,17 +2,16 @@ import React, {
   PropsWithChildren,
   useState,
   createContext,
-  DragEvent,
   useRef,
   MutableRefObject,
   SetStateAction,
   Dispatch,
 } from 'react';
 import { idType } from '../types/draggableLib.type';
-import { v4 as uuidv4 } from 'uuid';
 import { ComponentType } from '@react-spring/web';
 //@ts-expect-error
 import iosDragDropShim from 'drag-drop-webkit-mobile';
+import { addIdToElement } from '../helpers/helpers';
 iosDragDropShim({
   enableEnterLeave: true,
   holdToDrag: 300,
@@ -44,10 +43,6 @@ type DraggableContextProps<T> = {
 type DraggableContextProviderProps<T> = {
   Component: ComponentType<T>;
   defaultComponentProps?: Record<keyof T, unknown>;
-};
-
-const addIdToElement = <T,>(item: T, tableId: string): idType<T> => {
-  return { id: uuidv4(), tableId, item };
 };
 
 const DraggableContext = createContext<DraggableContextProps<any>>(

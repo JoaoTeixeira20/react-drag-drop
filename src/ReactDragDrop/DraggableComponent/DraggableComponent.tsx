@@ -78,7 +78,7 @@ function DraggableComponent<T>(
   }
 
   const handleDragSource = (event: DragEvent<HTMLElement>) => {
-    event.preventDefault();
+    //event.preventDefault();
     // event.stopPropagation();
     !isHovering &&
       draggedElementSpringApi.start({
