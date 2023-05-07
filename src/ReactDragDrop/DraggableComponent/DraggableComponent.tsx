@@ -112,6 +112,22 @@ function DraggableComponent<T>(
         left: event.touches[0].clientX,
         top: event.touches[0].clientY,
       });
+    // Get the dimensions of the viewport
+  var viewportWidth = window.innerWidth;
+  var viewportHeight = window.innerHeight;
+  
+  //work on this and figure a way to handle scrollable tables too
+  if (event.touches[0].clientX <= 20) {
+    window.scrollTo(window.scrollX - 20, window.scrollY);
+  } else if (event.touches[0].clientX >= viewportWidth) {
+    window.scrollTo(window.scrollX + 20, window.scrollY);
+  }
+  
+  if (event.touches[0].clientY <= 20) {
+    window.scrollTo(window.scrollX, window.scrollY - 20);
+  } else if (event.touches[0].clientY >= viewportHeight) {
+    window.scrollTo(window.scrollX, window.scrollY + 20);
+  }
   };
 
   return (

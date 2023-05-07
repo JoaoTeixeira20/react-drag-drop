@@ -1,0 +1,1 @@
+import{e,h as n}from"./chunk-WJY55VQB.js";var t=e(n());function r(o){return t.default.createElement("div",{style:{display:"flex",flexDirection:"row",backgroundColor:"#212e41",color:"white",padding:"10px",justifyContent:"center",alignItems:"center",borderRadius:"10px",margin:"5px"}},t.default.createElement("p",null,`Task: ${o.todotask}`))}var p=r;export{p as default};
