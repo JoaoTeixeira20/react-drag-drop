@@ -1,7 +1,7 @@
 {
-  "name": "create-react-package-esbuild",
-  "version": "1.0.8",
-  "description": "Tool to export component package to npm with preview",
+  "name": "react-drag-drop",
+  "version": "1.0.0",
+  "description": "Tool create drag drop lists",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -18,16 +18,17 @@
   "license": "ISC",
   "dependencies": {
     "@react-spring/web": "^9.7.2",
+    "@types/uuid": "^9.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sourcemapped-stacktrace": "^1.1.11",
-    "styled-components": "^5.3.9"
+    "uuid": "^9.0.0",
+    "drag-drop-webkit-mobile": "^1.4.1"
+
   },
   "devDependencies": {
     "@types/node": "^18.15.13",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
-    "@types/styled-components": "^5.1.26",
     "dotenv": "^16.0.3",
     "esbuild": "^0.17.16",
     "prettier": "^2.8.7",

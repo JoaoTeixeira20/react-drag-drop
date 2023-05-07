@@ -1,14 +1,12 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import ErrorStackTrace from './ErrorStackTrace/ErrorStackTrace';
-import DynamicComponent from '@/components/DynamicComponent/DynamicComponent';
-import GlobalStyle from '@/GlobalStyles';
+import ContextTestDrag from './ReactDragDropTestComponent/TestDrag';
 
 const App = () => (
   <>
-    <GlobalStyle />
     <ErrorStackTrace>
-      <DynamicComponent />
+      <ContextTestDrag/>
     </ErrorStackTrace>
   </>
 );
