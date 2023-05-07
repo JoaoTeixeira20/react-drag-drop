@@ -7,6 +7,7 @@ import React, {
   useMemo,
   TouchEvent,
   CSSProperties,
+  useRef,
 } from 'react';
 import { SpringValues, animated, useSpring } from '@react-spring/web';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
@@ -27,12 +28,13 @@ function DraggableComponent<T>(
   props: PropsWithChildren<draggableComponentProps<T>>
 ): ReactElement {
   const id = useMemo(() => props.id || uuidv4(), []);
-
+  const componentRef = useRef<HTMLDivElement>(null);
   const {
     isHovering,
     isDragging,
     setIsDragging,
     hoveredTargetCoordinates,
+    setSourceDimentions,
   } = useContext(DraggableContext);
   const [{ left, top, opacity }, draggedElementSpringApi] = useSpring<
     SpringValues<{
@@ -54,7 +56,15 @@ function DraggableComponent<T>(
         left: hoveredTargetCoordinates.x, // - offsetCoordinates.x,
         top: hoveredTargetCoordinates.y, // - offsetCoordinates.y,
       });
-  }, [isHovering, isDragging, hoveredTargetCoordinates]);
+  }, [isHovering, isDragging]);
+
+  useEffect(() => {
+    isDragging === id && componentRef.current &&
+      setSourceDimentions({
+        width: componentRef.current?.clientWidth,
+        height: componentRef.current?.clientHeight,
+      });
+  }, [isDragging]);
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     setIsDragging(id);
@@ -105,7 +115,7 @@ function DraggableComponent<T>(
   };
 
   return (
-    <div style={{ ...props.style, position: 'relative' }}>
+    <div ref={componentRef} style={{ ...props.style, position: 'relative' }}>
       <div
         style={{
           cursor: 'grab',

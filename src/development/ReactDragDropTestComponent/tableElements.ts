@@ -23,7 +23,7 @@ export const tableElements: tableElementsType[] = [
       ],
     },
     {
-      tableId: 'in progress',
+      tableId: 'progress',
       action: 'move',
       elements: [{ todotask: 'recursive drag and drop elements' }],
     },
