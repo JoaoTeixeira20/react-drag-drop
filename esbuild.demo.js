@@ -4,6 +4,6 @@ require('esbuild').build({
     minify: true,
     format: 'esm',
     target: ['es6'],
-    outdir: 'demoPage',
+    outdir: 'docs',
     splitting: true,
   });
