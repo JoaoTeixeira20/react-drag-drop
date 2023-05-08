@@ -56,7 +56,7 @@ function DraggableComponent<T>(
         left: hoveredTargetCoordinates.x, // - offsetCoordinates.x,
         top: hoveredTargetCoordinates.y, // - offsetCoordinates.y,
       });
-  }, [isHovering, isDragging]);
+  }, [isHovering, isDragging, hoveredTargetCoordinates]);
 
   useEffect(() => {
     isDragging === id && componentRef.current &&
