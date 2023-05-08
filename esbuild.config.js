@@ -6,5 +6,5 @@ require('esbuild').build({
   target: ['es6'],
   outdir: 'dist',
   splitting: true,
-  external: ['@react-spring/web', 'react', 'react-dom', 'styled-components'],
+  external: ['@react-spring/web', 'react', 'react-dom', 'mobile-drag-drop','uuid'],
 });

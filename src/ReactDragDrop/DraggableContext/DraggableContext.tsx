@@ -9,15 +9,9 @@ import React, {
 } from 'react';
 import { idType } from '../types/draggableLib.type';
 import { ComponentType } from '@react-spring/web';
-//@ts-expect-error
-import iosDragDropShim from 'drag-drop-webkit-mobile';
+import { polyfill } from 'mobile-drag-drop';
 import { addIdToElement } from '../helpers/helpers';
-iosDragDropShim({
-  enableEnterLeave: true,
-  holdToDrag: 300,
-  simulateAnchorClick: false,
-  requireExplicitDraggable: true,
-});
+polyfill({})
 
 type DraggableContextProps<T> = {
   Component: ComponentType<T>;

@@ -19,12 +19,10 @@
   "license": "ISC",
   "dependencies": {
     "@react-spring/web": "^9.7.2",
-    "@types/uuid": "^9.0.1",
+    "mobile-drag-drop": "^3.0.0-rc.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "uuid": "^9.0.0",
-    "drag-drop-webkit-mobile": "^1.4.1"
-
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.13",
@@ -33,7 +31,8 @@
     "dotenv": "^16.0.3",
     "esbuild": "^0.17.16",
     "prettier": "^2.8.7",
-    "typescript": "^5.0.4",
-    "sourcemapped-stacktrace": "^1.1.11"
+    "@types/uuid": "^9.0.1",
+    "sourcemapped-stacktrace": "^1.1.11",
+    "typescript": "^5.0.4"
   }
 }
