@@ -68,14 +68,17 @@ function DraggableComponent<T>(
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     setIsDragging(id);
+    //eliminate initial animation from the top left of the screen
+    draggedElementSpringApi.set({
+      left: event.clientX,
+      top: event.clientY,
+      opacity: 0.8,
+    });
     //hide default drag display
     const img = new Image();
     img.src =
       'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     event.dataTransfer.setDragImage(img, 0, 0);
-    draggedElementSpringApi.start({
-      opacity: 0.8,
-    });
     event.dataTransfer.effectAllowed = props.action;
     // set data for the drag event
     event.dataTransfer.setData('id', id);
@@ -105,6 +108,14 @@ function DraggableComponent<T>(
       opacity: 1,
     });
   };
+
+  const handleTouchStart = (event: TouchEvent<HTMLElement>) => {
+    //eliminate initial animation from the top left of the screen
+    draggedElementSpringApi.set({
+      left: event.touches[0].clientX,
+      top: event.touches[0].clientY
+    })
+  }
 
   const handleTouchMove = (event: TouchEvent<HTMLElement>) => {
     !isHovering &&
@@ -142,6 +153,7 @@ function DraggableComponent<T>(
         onDragStart={handleDragStartSource}
         onDragEnd={handleDragEndSource}
         onDrag={handleDragSource}
+        onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
         <animated.div
