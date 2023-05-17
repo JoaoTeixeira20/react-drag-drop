@@ -59,7 +59,8 @@ function DraggableComponent<T>(
   }, [isHovering, isDragging, hoveredTargetCoordinates]);
 
   useEffect(() => {
-    isDragging === id && componentRef.current &&
+    isDragging === id &&
+      componentRef.current &&
       setSourceDimentions({
         width: componentRef.current?.clientWidth,
         height: componentRef.current?.clientHeight,
@@ -67,6 +68,7 @@ function DraggableComponent<T>(
   }, [isDragging]);
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
+    event.stopPropagation();
     setIsDragging(id);
     //eliminate initial animation from the top left of the screen
     draggedElementSpringApi.set({
@@ -113,9 +115,9 @@ function DraggableComponent<T>(
     //eliminate initial animation from the top left of the screen
     draggedElementSpringApi.set({
       left: event.touches[0].clientX,
-      top: event.touches[0].clientY
-    })
-  }
+      top: event.touches[0].clientY,
+    });
+  };
 
   const handleTouchMove = (event: TouchEvent<HTMLElement>) => {
     !isHovering &&
@@ -123,22 +125,6 @@ function DraggableComponent<T>(
         left: event.touches[0].clientX,
         top: event.touches[0].clientY,
       });
-    // Get the dimensions of the viewport
-  var viewportWidth = window.innerWidth;
-  var viewportHeight = window.innerHeight;
-  
-  //work on this and figure a way to handle scrollable tables too
-  if (event.touches[0].clientX <= 20) {
-    window.scrollTo(window.scrollX - 20, window.scrollY);
-  } else if (event.touches[0].clientX >= viewportWidth) {
-    window.scrollTo(window.scrollX + 20, window.scrollY);
-  }
-  
-  if (event.touches[0].clientY <= 20) {
-    window.scrollTo(window.scrollX, window.scrollY - 20);
-  } else if (event.touches[0].clientY >= viewportHeight) {
-    window.scrollTo(window.scrollX, window.scrollY + 20);
-  }
   };
 
   return (
@@ -158,7 +144,7 @@ function DraggableComponent<T>(
       >
         <animated.div
           style={{
-            pointerEvents: 'none',
+            // pointerEvents: 'none',
             opacity,
           }}
         >

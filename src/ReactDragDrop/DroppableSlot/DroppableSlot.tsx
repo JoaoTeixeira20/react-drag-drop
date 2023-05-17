@@ -54,7 +54,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
 
     function handleDragOverTarget(event: DragEvent<HTMLElement>) {
       event.preventDefault();
-      event.stopPropagation();
       if(!isHovering) {
         setIsHovering(event.currentTarget.dataset["id"] || null);
       };
@@ -63,7 +62,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
 
     function handleDragLeaveTarget(event: DragEvent<HTMLElement>) {
       event.preventDefault();
-      event.stopPropagation();
 
       setIsHovering(null);
     }
@@ -125,6 +123,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           display: 'flex',
           flexDirection: 'row',
           width: "100%",
+          backgroundColor: 'orange',
           //this values serves as droppable slots without index
           //springs are orchestrated on a map, if not fallback to this values
           //@ts-expect-error

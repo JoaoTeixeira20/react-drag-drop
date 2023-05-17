@@ -133,9 +133,10 @@ function DroppableTable<T>(props: droppableTable<T>) {
             action={props.action}
           >
             <Suspense fallback={<div>loading component...</div>}>
-              <Component {...element.item} />
+              <Component {...element.item} >
               {/* test this out */}
-              {/* {element.item.children && <DroppableTable elements={element.item.children}/>} */}
+              <DroppableTable action="move" elements={element.item.children}/>
+              </Component>
             </Suspense>
           </DraggableComponent>
           <DroppableSlot id={element.id} tableId={tableId} />

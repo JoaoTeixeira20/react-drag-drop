@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 export type testComponentProps = {
   todotask: string;
 };
 
-function TestComponent(props: testComponentProps) {
+function TestComponent(props: PropsWithChildren<testComponentProps>) {
   return (
     <div
       style={{
@@ -20,6 +20,7 @@ function TestComponent(props: testComponentProps) {
       }}
     >
       <p>{`Task: ${props.todotask}`}</p>
+      {props.children}
     </div>
   );
 }
