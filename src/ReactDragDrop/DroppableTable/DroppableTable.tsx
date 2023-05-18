@@ -44,18 +44,27 @@ type droppableTable<T> = {
   tableId?: string;
   elements?: T[];
   action: actionType;
+  enableDrop?: boolean;
 };
 
 function DroppableTable<T>(props: droppableTable<T>) {
   const tableId = useMemo(() => props.tableId || uuidv4(), []);
-  const { elements, setElements, Component } = useContext(DraggableContext);
+  const { elements, setElements, Component, isDragging } =
+    useContext(DraggableContext);
+
+  const enableDrop = useMemo(
+    () => (isDragging === props.tableId ? false : props.enableDrop),
+    [isDragging]
+  );
 
   useEffect(
     () =>
       props.elements &&
       setElements((prev) => [
         ...prev,
-        ...(props.elements ? props.elements.map((el) => addIdToElement<T>(el, tableId)) : []),
+        ...(props.elements
+          ? props.elements.map((el) => addIdToElement<T>(el, tableId))
+          : []),
       ]),
     []
   );
@@ -114,7 +123,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         userSelect: 'none',
       }}
     >
-      <DroppableSlot tableId={tableId} />
+      {enableDrop && <DroppableSlot tableId={tableId} />}
       {transitions((style, element) => (
         <animated.div
           style={{
@@ -133,13 +142,17 @@ function DroppableTable<T>(props: droppableTable<T>) {
             action={props.action}
           >
             <Suspense fallback={<div>loading component...</div>}>
-              <Component {...element.item} >
-              {/* test this out */}
-              <DroppableTable action={props.action} tableId={element.id}/>
+              <Component {...element.item}>
+                {/* test this out */}
+                <DroppableTable
+                  action={props.action}
+                  tableId={element.id}
+                  enableDrop={enableDrop}
+                />
               </Component>
             </Suspense>
           </DraggableComponent>
-          <DroppableSlot id={element.id} tableId={tableId} />
+          {enableDrop && <DroppableSlot id={element.id} tableId={tableId} />}
           <div
             data-id={element.id}
             style={{
@@ -157,5 +170,9 @@ function DroppableTable<T>(props: droppableTable<T>) {
     </div>
   );
 }
+
+DroppableTable.defaultProps = {
+  enableDrop: true,
+};
 
 export default DroppableTable;

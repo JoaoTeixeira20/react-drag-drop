@@ -9,7 +9,7 @@ function TestComponent(props: PropsWithChildren<testComponentProps>) {
     <div
       style={{
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: '#212e41',
         border: "1px solid yellow",
         color: 'white',
