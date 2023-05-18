@@ -95,18 +95,20 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     const action = event.dataTransfer.getData('action');
     const index = elements.map((element) => element.id).indexOf(droppedId);
     const element = JSON.parse(elementDropped) as T
+    const newId = uuidv4();
     elements.splice(index + 1, 0, {
-      id: uuidv4(),
+      id: newId,
       tableId: props.tableId,
       item: element,
     });
+    const newEls = elements.map(el => el.tableId === draggedId ? {...el, tableId: newId} : el)
     if (action === 'move') {
       setElements(
-        elements.filter((element) => element.id !== draggedId)
+        newEls.filter((element) => element.id !== draggedId)
       );
       return;
     }
-    setElements([...elements]);
+    setElements(newEls);
   }
 
   return (

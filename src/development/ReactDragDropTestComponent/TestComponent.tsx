@@ -11,6 +11,7 @@ function TestComponent(props: PropsWithChildren<testComponentProps>) {
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: '#212e41',
+        border: "1px solid yellow",
         color: 'white',
         padding: '10px',
         justifyContent: 'center',
