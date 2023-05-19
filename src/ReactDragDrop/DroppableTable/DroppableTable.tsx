@@ -105,7 +105,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         // maxHeight: '0px',
         gridTemplateRows: '0fr',
         outerWidth: "0px",
-        transform: 'translateY(0px)',
+        transform: 'translateY(0px) scale(1)',
         boxShadow: '0px 0px 13px -10px rgba(238, 255, 0, 0.75), inset 0px 0px 13px -10px rgba(251, 255, 0, 0.75)',
       },
       enter: {
