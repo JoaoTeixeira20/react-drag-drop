@@ -25,9 +25,9 @@ function TestEditComponent() {
             onChange={handleChange}
             value={selectedElement.item[el] as string || ""}
           ></input>
+          <input type="button" onClick={handleSubmit} value={'add element'}></input>
         </div>
       ))}
-      <input type="button" onClick={handleSubmit} value={'add element'}></input>
     </div>
   );
 }
