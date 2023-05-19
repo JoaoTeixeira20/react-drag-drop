@@ -23,7 +23,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     isHovering,
     setIsHovering,
     sourceDimentions,
-    selectedElementRef,
+    hoveredElementRef,
     setHoveredTargetCoordinates,
   } = useContext(DraggableContext);
 
@@ -42,10 +42,10 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
       onRest: () => {
         if (
           id === isHovering &&
-          selectedElementRef.current &&
+          hoveredElementRef.current &&
           isDragging
         ) {
-          const { x, y } = selectedElementRef.current?.getBoundingClientRect();
+          const { x, y } = hoveredElementRef.current?.getBoundingClientRect();
           setHoveredTargetCoordinates({ x, y });
         }
       },
@@ -69,14 +69,14 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     function handleDragEnterTarget(event: DragEvent<HTMLElement>) {
       event.preventDefault();
       // event.stopPropagation();
-      selectedElementRef.current = event.currentTarget;
-      if (selectedElementRef.current) {
+      hoveredElementRef.current = event.currentTarget;
+      if (hoveredElementRef.current) {
         // check onRest callback on useSprings that corrects the correct snap value
         // if the animation didn't end and the snap got incorrect
         // also this cripples performance, need to refactor to an intersection observer
         // approach insted of getBoundingClientRect
-        setIsHovering(selectedElementRef.current.dataset['id'] as string);
-        const { x, y } = selectedElementRef.current?.getBoundingClientRect();
+        setIsHovering(hoveredElementRef.current.dataset['id'] as string);
+        const { x, y } = hoveredElementRef.current?.getBoundingClientRect();
         setHoveredTargetCoordinates({ x, y });
       }
     }
@@ -86,7 +86,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     // event.stopPropagation();
     setIsDragging(null);
     setIsHovering(null);
-    selectedElementRef.current = null;
+    hoveredElementRef.current = null;
     const elementDropped = event.dataTransfer.getData('componentProps');
     const draggedId = event.dataTransfer.getData('id');
     // const draggedTableId = event.dataTransfer.getData('tableId');

@@ -35,6 +35,7 @@ function DraggableComponent<T>(
     setIsDragging,
     hoveredTargetCoordinates,
     setSourceDimentions,
+    setSelectedElement,
   } = useContext(DraggableContext);
   const [{ left, top, opacity }, draggedElementSpringApi] = useSpring<
     SpringValues<{
@@ -70,6 +71,7 @@ function DraggableComponent<T>(
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     event.stopPropagation();
     setIsDragging(id);
+    setSelectedElement(null);
     //eliminate initial animation from the top left of the screen
     draggedElementSpringApi.set({
       left: event.clientX,
@@ -133,7 +135,7 @@ function DraggableComponent<T>(
         style={{
           cursor: 'grab',
           position: 'relative',
-          touchAction: 'none',
+          //touchAction: 'none',
         }}
         draggable={true}
         onDragStart={handleDragStartSource}

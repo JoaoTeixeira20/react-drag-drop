@@ -9,6 +9,7 @@ const Component = lazy(
 );
 
 import './testdrag.css';
+import TestEditComponent from './TestEditComponent';
 
 function ContextTestDrag() {
   return (
@@ -16,7 +17,10 @@ function ContextTestDrag() {
       Component={Component}
       defaultComponentProps={{ todotask: 'foo' }}
     >
+      <div style={{display:"flex", flexDirection:"row"}}>
       <TestAddComponent tables={tableElements.map((el) => el.tableId)} />
+      <TestEditComponent/>
+      </div>
       <div
         style={{
           display: 'flex',

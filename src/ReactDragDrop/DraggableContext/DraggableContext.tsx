@@ -11,7 +11,7 @@ import { idType } from '../types/draggableLib.type';
 import { ComponentType } from '@react-spring/web';
 import { polyfill } from 'mobile-drag-drop';
 import { addIdToElement } from '../helpers/helpers';
-polyfill({})
+polyfill({});
 
 type DraggableContextProps<T> = {
   Component: ComponentType<T>;
@@ -27,11 +27,15 @@ type DraggableContextProps<T> = {
   setSourceDimentions: Dispatch<
     SetStateAction<{ width: number; height: number }>
   >;
-  selectedElementRef: MutableRefObject<HTMLElement | null>;
+  hoveredElementRef: MutableRefObject<HTMLElement | null>;
   hoveredTargetCoordinates: { x: number; y: number };
   setHoveredTargetCoordinates: Dispatch<
     SetStateAction<{ x: number; y: number }>
   >;
+  selectedElement: idType<T> | null;
+  setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
+  selectElement: (id: string | null) => void;
+  submitEditedElement: () => void;
 };
 
 type DraggableContextProviderProps<T> = {
@@ -53,14 +57,29 @@ const DraggableContextProvider = <T,>(
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
-  const selectedElementRef = useRef<HTMLElement | null>(null);
+  const hoveredElementRef = useRef<HTMLElement | null>(null);
   const [hoveredTargetCoordinates, setHoveredTargetCoordinates] = useState({
     x: 0,
     y: 0,
   });
+  const [selectedElement, setSelectedElement] = useState<idType<T> | null>(
+    null
+  );
 
   function addElementWithId(element: T, tableId: string) {
     setElements((prev) => [...prev, addIdToElement<T>(element, tableId)]);
+  }
+
+  function selectElement(id: string | null): void {
+    id && setSelectedElement(elements.find((el) => id === el.id) || null);
+  }
+
+  function submitEditedElement(): void {
+    selectedElement &&
+      setElements((prev) =>
+        prev.map((el) => (el.id === selectedElement.id ? selectedElement : el))
+      );
+    setSelectedElement(null);
   }
 
   const value = {
@@ -75,9 +94,13 @@ const DraggableContextProvider = <T,>(
     setIsDragging,
     sourceDimentions,
     setSourceDimentions,
-    selectedElementRef,
+    hoveredElementRef,
     hoveredTargetCoordinates,
     setHoveredTargetCoordinates,
+    selectedElement,
+    setSelectedElement,
+    selectElement,
+    submitEditedElement,
   };
 
   return (

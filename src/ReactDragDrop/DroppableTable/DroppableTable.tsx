@@ -49,8 +49,14 @@ type droppableTable<T> = {
 
 function DroppableTable<T>(props: droppableTable<T>) {
   const tableId = useMemo(() => props.tableId || uuidv4(), []);
-  const { elements, setElements, Component, isDragging } =
-    useContext(DraggableContext);
+  const {
+    elements,
+    setElements,
+    Component,
+    isDragging,
+    selectElement,
+    selectedElement,
+  } = useContext(DraggableContext);
 
   const enableDrop = useMemo(
     () => (isDragging === props.tableId ? false : props.enableDrop),
@@ -79,12 +85,28 @@ function DroppableTable<T>(props: droppableTable<T>) {
     tableElements.filter((el) => el.tableId === tableId),
     {
       key: (element: idType<T>) => element.id,
+      update: (element) => ({
+        outlineWidth: element.id === selectedElement?.id ? '2px' : '0px',
+        transform:
+          element.id === selectedElement?.id
+            ? `translateY(6px) scale(1.02)`
+            : `translateY(0px) scale(1)`,
+        backgroundColor:
+          element.id === selectedElement?.id ? 'transparent' : 'transparent',
+        boxShadow:
+          element.id === selectedElement?.id
+            ? ' 0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
+            : ' 0px 0px 13px -10px rgba(238, 255, 0, 0.75), inset 0px 0px 13px -10px rgba(251, 255, 0, 0.75)',
+      }),
       from: {
         //transform: 'perspective(600px) rotateX(180deg)',
         color: 'transparent',
         opacity: 0,
         // maxHeight: '0px',
         gridTemplateRows: '0fr',
+        outerWidth: "0px",
+        transform: 'translateY(0px)',
+        boxShadow: '0px 0px 13px -10px rgba(238, 255, 0, 0.75), inset 0px 0px 13px -10px rgba(251, 255, 0, 0.75)',
       },
       enter: {
         //transform: 'perspective(600px) rotateX(0deg)',
@@ -110,9 +132,11 @@ function DroppableTable<T>(props: droppableTable<T>) {
     setElements((prev) => prev.filter((element) => element.id !== id));
   }
 
-  function gimmeTheProps(event: SyntheticEvent<HTMLElement>) {
-    const index = event.currentTarget.dataset['id'];
-    console.log(elements.find((el) => el.id === index)?.item);
+  function selectElementHandler(event: SyntheticEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    const index = event.currentTarget.dataset['id'] || null;
+    selectElement(index);
   }
 
   return (
@@ -129,10 +153,11 @@ function DroppableTable<T>(props: droppableTable<T>) {
           style={{
             display: 'grid',
             position: 'relative',
+            borderRadius: '10px',
             ...style,
           }}
           data-id={element.id}
-          onClick={gimmeTheProps}
+          onClick={selectElementHandler}
         >
           <DraggableComponent
             id={element.id}
@@ -142,7 +167,11 @@ function DroppableTable<T>(props: droppableTable<T>) {
             action={props.action}
           >
             <Suspense fallback={<div>loading component...</div>}>
-              <Component {...element.item}>
+              <Component
+                {...(element.id === selectedElement?.id
+                  ? selectedElement.item
+                  : element.item)}
+              >
                 {/* test this out */}
                 <DroppableTable
                   action={props.action}
