@@ -95,8 +95,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
           element.id === selectedElement?.id ? 'transparent' : 'transparent',
         boxShadow:
           element.id === selectedElement?.id
-            ? ' 0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
-            : ' 0px 0px 13px -10px rgba(238, 255, 0, 0.75), inset 0px 0px 13px -10px rgba(251, 255, 0, 0.75)',
+            ? '0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
+            : '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
       }),
       from: {
         //transform: 'perspective(600px) rotateX(180deg)',
@@ -104,9 +104,10 @@ function DroppableTable<T>(props: droppableTable<T>) {
         opacity: 0,
         // maxHeight: '0px',
         gridTemplateRows: '0fr',
-        outerWidth: "0px",
+        outerWidth: '0px',
         transform: 'translateY(0px) scale(1)',
-        boxShadow: '0px 0px 13px -10px rgba(238, 255, 0, 0.75), inset 0px 0px 13px -10px rgba(251, 255, 0, 0.75)',
+        boxShadow:
+          '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
       },
       enter: {
         //transform: 'perspective(600px) rotateX(0deg)',
@@ -136,7 +137,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
     event.preventDefault();
     event.stopPropagation();
     const index = event.currentTarget.dataset['id'] || null;
-    selectElement(index);
+    selectedElement?.id === index ? selectElement(null) : selectElement(index);
   }
 
   return (
@@ -153,7 +154,6 @@ function DroppableTable<T>(props: droppableTable<T>) {
           style={{
             display: 'grid',
             position: 'relative',
-            borderRadius: '10px',
             ...style,
           }}
           data-id={element.id}

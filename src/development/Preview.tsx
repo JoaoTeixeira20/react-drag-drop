@@ -6,7 +6,7 @@ import ContextTestDrag from './ReactDragDropTestComponent/TestDrag';
 const App = () => (
   <>
     <ErrorStackTrace>
-      <ContextTestDrag/>
+      <ContextTestDrag />
     </ErrorStackTrace>
   </>
 );

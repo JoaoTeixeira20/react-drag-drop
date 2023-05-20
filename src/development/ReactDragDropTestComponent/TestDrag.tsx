@@ -17,9 +17,9 @@ function ContextTestDrag() {
       Component={Component}
       defaultComponentProps={{ todotask: 'foo' }}
     >
-      <div style={{display:"flex", flexDirection:"row"}}>
-      <TestAddComponent tables={tableElements.map((el) => el.tableId)} />
-      <TestEditComponent/>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <TestAddComponent tables={tableElements.map((el) => el.tableId)} />
+        <TestEditComponent />
       </div>
       <div
         style={{
@@ -37,12 +37,12 @@ function ContextTestDrag() {
             style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
           >
             <h1>{table.tableId}</h1>
-            <div style={{backgroundColor: '#3A94F6',}}>
-            <DroppableTable
-              tableId={table.tableId}
-              action={table.action}
-              elements={table.elements}
-            />
+            <div style={{ backgroundColor: '#3A94F6' }}>
+              <DroppableTable
+                tableId={table.tableId}
+                action={table.action}
+                elements={table.elements}
+              />
             </div>
           </div>
         ))}

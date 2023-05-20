@@ -135,7 +135,7 @@ function DraggableComponent<T>(
         style={{
           cursor: 'grab',
           position: 'relative',
-          //touchAction: 'none',
+          touchAction: 'none',
         }}
         draggable={true}
         onDragStart={handleDragStartSource}

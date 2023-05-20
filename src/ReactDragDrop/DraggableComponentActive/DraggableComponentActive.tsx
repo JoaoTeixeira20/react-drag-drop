@@ -1,9 +1,5 @@
 import { SpringValues, animated } from '@react-spring/web';
-import React, {
-  PropsWithChildren,
-  ReactElement,
-  useContext,
-} from 'react';
+import React, { PropsWithChildren, ReactElement, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 

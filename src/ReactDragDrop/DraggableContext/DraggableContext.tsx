@@ -6,6 +6,7 @@ import React, {
   MutableRefObject,
   SetStateAction,
   Dispatch,
+  useEffect,
 } from 'react';
 import { idType } from '../types/draggableLib.type';
 import { ComponentType } from '@react-spring/web';
@@ -30,7 +31,7 @@ type DraggableContextProps<T> = {
   hoveredElementRef: MutableRefObject<HTMLElement | null>;
   hoveredTargetCoordinates: { x: number; y: number };
   setHoveredTargetCoordinates: Dispatch<
-    SetStateAction<{ x: number; y: number }>
+    SetStateAction<{ x: number; y: number; width: number }>
   >;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
@@ -61,6 +62,7 @@ const DraggableContextProvider = <T,>(
   const [hoveredTargetCoordinates, setHoveredTargetCoordinates] = useState({
     x: 0,
     y: 0,
+    width: 0,
   });
   const [selectedElement, setSelectedElement] = useState<idType<T> | null>(
     null
@@ -71,7 +73,7 @@ const DraggableContextProvider = <T,>(
   }
 
   function selectElement(id: string | null): void {
-    id && setSelectedElement(elements.find((el) => id === el.id) || null);
+    setSelectedElement(elements.find((el) => id === el.id) || null);
   }
 
   function submitEditedElement(): void {
@@ -81,6 +83,14 @@ const DraggableContextProvider = <T,>(
       );
     setSelectedElement(null);
   }
+
+  useEffect(() => {
+    hoveredTargetCoordinates.width !== sourceDimentions.width &&
+      setSourceDimentions((prev) => ({
+        ...prev,
+        width: hoveredTargetCoordinates.width,
+      }));
+  }, [hoveredTargetCoordinates]);
 
   const value = {
     Component: props.Component,
