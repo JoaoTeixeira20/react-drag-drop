@@ -24,9 +24,14 @@ type DraggableContextProps<T> = {
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
   hoveredElementRef: MutableRefObject<HTMLElement | null>;
-  hoveredTargetCoordinates: { x: number; y: number };
+  hoveredTargetCoordinates: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
   setHoveredTargetCoordinates: Dispatch<
-    SetStateAction<{ x: number; y: number; width: number, height: number }>
+    SetStateAction<{ x: number; y: number; width: number; height: number }>
   >;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;

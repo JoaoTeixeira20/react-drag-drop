@@ -1,12 +1,15 @@
 import { SpringValues, animated } from '@react-spring/web';
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { PropsWithChildren, ReactElement, useContext } from 'react';
 import { createPortal } from 'react-dom';
+import { DraggableContext } from '../DraggableContext/DraggableContext';
 
 function DraggaBleComponentActive(
   props: PropsWithChildren<{
     style: SpringValues<{ left: number; top: number; opacity: number }>;
   }>
 ): ReactElement {
+
+  const { hoveredTargetCoordinates } = useContext(DraggableContext);
 
   const domNode = document.getElementById('portal-draggable-element');
 
@@ -18,6 +21,8 @@ function DraggaBleComponentActive(
           top: props.style.top,
           left: props.style.left,
           pointerEvents: 'none',
+          width: hoveredTargetCoordinates.width || 'auto',
+          height: hoveredTargetCoordinates.height || 'auto',
         }}
       >
         {props.children}

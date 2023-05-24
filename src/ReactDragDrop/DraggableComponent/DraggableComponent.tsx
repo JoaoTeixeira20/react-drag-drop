@@ -56,7 +56,7 @@ function DraggableComponent<T>(
         left: hoveredTargetCoordinates.x, // - offsetCoordinates.x,
         top: hoveredTargetCoordinates.y, // - offsetCoordinates.y,
       });
-  }, [isHovering, isDragging, hoveredTargetCoordinates]);
+  }, [isDragging, hoveredTargetCoordinates]);
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     event.stopPropagation();

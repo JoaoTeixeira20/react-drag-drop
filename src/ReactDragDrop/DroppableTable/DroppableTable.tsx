@@ -145,8 +145,6 @@ function DroppableTable<T>(props: droppableTable<T>) {
         position: 'relative',
         boxSizing: 'border-box',
         border: 'none',
-        padding: '0px',
-        margin: '0px',
         userSelect: 'none',
         justifyContent: 'space-evenly',
         alignItems: 'center',

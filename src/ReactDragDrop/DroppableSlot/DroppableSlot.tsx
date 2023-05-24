@@ -8,7 +8,7 @@ import React, {
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
-import { animated, useSpring } from '@react-spring/web';
+import { animated, useSpring, useTransition } from '@react-spring/web';
 
 type DroppableSlotProps = {
   id?: string;
@@ -29,35 +29,45 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     Component,
   } = useContext(DraggableContext);
 
-  useEffect(() => {
-    id === isHovering && console.log(elements.find((el) => el.id === isDragging)?.item);
-  },[isHovering]);
-
   const spring = useSpring({
-    //width: id === isHovering ? sourceDimentions.width : 100,
-    // width: id === isHovering ? sourceDimentions.width : isDragging ? 30 : 0,
-    // height:
-    //   //check target hover to fit dragged element dimentions
-    //   id === isHovering
-    //     ? sourceDimentions.height
-    //     : // don't highlight the current draggin position to drop
-    //     isDragging
-    //     ? 30
-    //     : 0,
-    gridTemplateRows: isDragging ? '1fr' : '0fr',
-    gridTemplateColumns: isDragging ? '1fr' : '0fr',
-    // scale: isDragging ? 1 : 0,
-    // height: 15,
-    // width: 15,
-    onRest: () => {
-      if (id === isHovering && hoveredElementRef.current && isDragging) {
-        const { x, y, width, height } =
-          hoveredElementRef.current?.getBoundingClientRect();
-        setHoveredTargetCoordinates({ x, y, width, height });
-      }
-    },
+    parentGridTemplateRows: isDragging ? '1fr' : '0fr',
+    parentGridTemplateColumns: isDragging ? '1fr' : '0fr',
+    childMinWidth: isDragging ? 25 : 0,
+    childMinHeigth: isDragging ? 25 : 0,
+    // onRest: () => {
+    //   if (id === isHovering && hoveredElementRef.current && isDragging) {
+    //     const { x, y, width, height } =
+    //       hoveredElementRef.current?.getBoundingClientRect();
+    //     setHoveredTargetCoordinates({ x, y, width, height });
+    //   }
+    // },
     config: { mass: 5, tension: 2000, friction: 200 },
   });
+
+  const transitions = useTransition(
+    id === isHovering ? elements.find((el) => el.id === isDragging)?.item : [],
+    {
+      from: {
+        gridTemplateRows: '0fr',
+        gridTemplateColumns: '0fr',
+      },
+      enter: {
+        gridTemplateRows: '1fr',
+        gridTemplateColumns: '1fr',
+      },
+      leave: {
+        gridTemplateRows: '0fr',
+        gridTemplateColumns: '0fr',
+      },
+      onRest: () => {
+        if (id === isHovering && hoveredElementRef.current && isDragging) {
+          const { x, y, width, height } =
+            hoveredElementRef.current?.getBoundingClientRect();
+          setHoveredTargetCoordinates({ x, y, width, height });
+        }
+      },
+    }
+  );
 
   function handleDragOverTarget(event: DragEvent<HTMLElement>) {
     event.preventDefault();
@@ -85,9 +95,9 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
       // also this cripples performance, need to refactor to an intersection observer
       // approach insted of getBoundingClientRect
       setIsHovering(hoveredElementRef.current.dataset['id'] as string);
-      const { x, y, width, height } =
-        hoveredElementRef.current?.getBoundingClientRect();
-      setHoveredTargetCoordinates({ x, y, width, height });
+      // const { x, y, width, height } =
+      //   hoveredElementRef.current?.getBoundingClientRect();
+      // setHoveredTargetCoordinates({ x, y, width, height });
     }
   }
 
@@ -133,15 +143,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
         style={{
           display: 'grid',
           position: 'relative',
-          // flexDirection: 'row',
           boxSizing: 'border-box',
           backgroundColor: 'orange',
           boxShadow: 'inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)',
-          // borderRadius: '10px',
-          border: '2px solid orange',
-          //this values serves as droppable slots without index
-          //springs are orchestrated on a map, if not fallback to this values
-          ...spring,
+          gridTemplateRows: spring.parentGridTemplateRows,
+          gridTemplateColumns: spring.parentGridTemplateColumns,
         }}
         data-id={id}
         onDragEnter={handleDragEnterTarget}
@@ -149,22 +155,36 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
         onDragLeave={handleDragLeaveTarget}
         onDrop={handleDropTarget}
       >
-        <div
+        <animated.div
           style={{
             overflow: 'hidden',
             position: 'relative',
+            pointerEvents: 'none',
+            minWidth: spring.childMinWidth,
+            minHeight: spring.childMinHeigth,
           }}
         >
-            {id === isHovering ? (
-              <div style={{pointerEvents:'none', position: 'relative'}}>
-              <Suspense fallback={<div>loading component...</div>}>
-                <Component
-                  {...elements.find((el) => el.id === isDragging)?.item}
-                ></Component>
-              </Suspense>
+          {transitions((style, element) => (
+            <animated.div
+              style={{
+                display: 'grid',
+                ...style,
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  opacity: 0,
+                }}
+              >
+                <Suspense fallback={<div>loading component...</div>}>
+                  <Component {...element}></Component>
+                </Suspense>
               </div>
-            ) : <p>cup</p>}
-        </div>
+            </animated.div>
+          ))}
+        </animated.div>
       </animated.div>
     </div>
   );
