@@ -144,6 +144,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
         all: 'inherit',
         position: 'relative',
         boxSizing: 'border-box',
+        margin: 0,
+        padding: 0,
         border: 'none',
         userSelect: 'none',
         justifyContent: 'space-evenly',

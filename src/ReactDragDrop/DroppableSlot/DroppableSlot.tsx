@@ -2,7 +2,6 @@ import React, {
   DragEvent,
   Suspense,
   useContext,
-  useEffect,
   useMemo,
 } from 'react';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
@@ -66,6 +65,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           setHoveredTargetCoordinates({ x, y, width, height });
         }
       },
+      config: {mass: 1, tension: 180, friction: 12, clamp: true},
     }
   );
 
