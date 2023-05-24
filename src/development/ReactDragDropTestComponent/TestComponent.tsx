@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react';
 
 export type testComponentProps = {
   todotask: string;
+  flexDirection: 'row' | 'column';
 };
 
 function TestComponent(props: PropsWithChildren<testComponentProps>) {
@@ -9,7 +10,7 @@ function TestComponent(props: PropsWithChildren<testComponentProps>) {
     <div
       style={{
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: props.flexDirection,
         backgroundColor: '#212e41',
         border: '1px solid yellow',
         color: 'white',

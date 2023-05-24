@@ -11,7 +11,7 @@ type testAddComponentProps = {
 };
 
 function TestAddComponent(props: testAddComponentProps) {
-  const { defaultComponentProps, addElementWithId } =
+  const { defaultComponentProps, addElementWithId, setElements } =
     useContext(DraggableContext);
   const [inputs, setInputs] = useState<
     Record<string | number | symbol, unknown>
@@ -30,6 +30,17 @@ function TestAddComponent(props: testAddComponentProps) {
 
   const handleTableIdChange = (event: SyntheticEvent<HTMLSelectElement>) => {
     setTableId(event.currentTarget.value);
+  };
+
+  const handleDirectionChange = (event: SyntheticEvent<HTMLSelectElement>) => {
+    const value = event.currentTarget.value;
+    value &&
+      setElements((prev) =>
+        prev.map((el) => ({
+          ...el,
+          item: { ...el.item, flexDirection: value },
+        }))
+      );
   };
 
   return (
@@ -55,6 +66,14 @@ function TestAddComponent(props: testAddComponentProps) {
         ))}
       </select>
       <input type="button" onClick={handleSubmit} value={'add element'}></input>
+      <div>
+        <label>change direction</label>
+        <select onChange={handleDirectionChange}>
+          <option>--select--</option>
+          <option value="row">row</option>
+          <option value="column">column</option>
+        </select>
+      </div>
     </div>
   );
 }

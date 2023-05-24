@@ -1,9 +1,4 @@
-import React, {
-  DragEvent,
-  Suspense,
-  useContext,
-  useMemo,
-} from 'react';
+import React, { DragEvent, Suspense, useContext, useMemo } from 'react';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -65,7 +60,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           setHoveredTargetCoordinates({ x, y, width, height });
         }
       },
-      config: {mass: 1, tension: 180, friction: 12, clamp: true},
+      config: { mass: 1, tension: 180, friction: 12, clamp: true },
     }
   );
 

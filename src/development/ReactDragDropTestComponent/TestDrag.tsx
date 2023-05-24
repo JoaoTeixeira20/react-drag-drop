@@ -15,7 +15,7 @@ function ContextTestDrag() {
   return (
     <DraggableContextProvider<testComponentProps>
       Component={Component}
-      defaultComponentProps={{ todotask: 'foo' }}
+      defaultComponentProps={{ todotask: 'foo', flexDirection: 'column' }}
     >
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TestAddComponent tables={tableElements.map((el) => el.tableId)} />
