@@ -19,25 +19,28 @@ function TestEditComponent() {
   };
 
   return (
-    <div>
-      {selectedElement?.item &&
-        Object.keys(selectedElement.item).map((el, index) => (
-          <div key={index}>
-            <label>{el}</label>
-            <input
-              type="text"
-              data-label={el}
-              onChange={handleChange}
-              value={(selectedElement.item[el] as string) || ''}
-            ></input>
-            <input
-              type="button"
-              onClick={handleSubmit}
-              value={'add element'}
-            ></input>
-          </div>
-        ))}
-    </div>
+    <>
+      {selectedElement?.item && (
+        <div>
+          {Object.keys(selectedElement.item).map((el, index) => (
+            <div key={index}>
+              <label>{el}</label>
+              <input
+                type="text"
+                data-label={el}
+                onChange={handleChange}
+                value={(selectedElement.item[el] as string) || ''}
+              ></input>
+            </div>
+          ))}
+          <input
+            type="button"
+            onClick={handleSubmit}
+            value={'edit element'}
+          ></input>
+        </div>
+      )}
+    </>
   );
 }
 
