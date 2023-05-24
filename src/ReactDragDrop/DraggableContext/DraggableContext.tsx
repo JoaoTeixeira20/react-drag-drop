@@ -6,7 +6,6 @@ import React, {
   MutableRefObject,
   SetStateAction,
   Dispatch,
-  useEffect,
 } from 'react';
 import { idType } from '../types/draggableLib.type';
 import { ComponentType } from '@react-spring/web';
@@ -24,14 +23,10 @@ type DraggableContextProps<T> = {
   setIsHovering: Dispatch<SetStateAction<string | null>>;
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
-  sourceDimentions: { width: number; height: number };
-  setSourceDimentions: Dispatch<
-    SetStateAction<{ width: number; height: number }>
-  >;
   hoveredElementRef: MutableRefObject<HTMLElement | null>;
   hoveredTargetCoordinates: { x: number; y: number };
   setHoveredTargetCoordinates: Dispatch<
-    SetStateAction<{ x: number; y: number; width: number }>
+    SetStateAction<{ x: number; y: number; width: number, height: number }>
   >;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
@@ -54,15 +49,12 @@ const DraggableContextProvider = <T,>(
   const [elements, setElements] = useState<idType<T>[]>([]);
   const [isHovering, setIsHovering] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [sourceDimentions, setSourceDimentions] = useState<{
-    width: number;
-    height: number;
-  }>({ width: 0, height: 0 });
   const hoveredElementRef = useRef<HTMLElement | null>(null);
   const [hoveredTargetCoordinates, setHoveredTargetCoordinates] = useState({
     x: 0,
     y: 0,
     width: 0,
+    height: 0,
   });
   const [selectedElement, setSelectedElement] = useState<idType<T> | null>(
     null
@@ -84,13 +76,14 @@ const DraggableContextProvider = <T,>(
     setSelectedElement(null);
   }
 
-  useEffect(() => {
-    hoveredTargetCoordinates.width !== sourceDimentions.width &&
-      setSourceDimentions((prev) => ({
-        ...prev,
-        width: hoveredTargetCoordinates.width,
-      }));
-  }, [hoveredTargetCoordinates]);
+  // useEffect(() => {
+  //   if(hoveredTargetCoordinates.width !== sourceDimentions.width){
+  //     setSourceDimentions((prev) => ({
+  //       ...prev,
+  //       width: hoveredTargetCoordinates.width,
+  //     }));
+  //   };
+  // }, [hoveredTargetCoordinates]);
 
   const value = {
     Component: props.Component,
@@ -102,8 +95,6 @@ const DraggableContextProvider = <T,>(
     setIsHovering,
     isDragging,
     setIsDragging,
-    sourceDimentions,
-    setSourceDimentions,
     hoveredElementRef,
     hoveredTargetCoordinates,
     setHoveredTargetCoordinates,

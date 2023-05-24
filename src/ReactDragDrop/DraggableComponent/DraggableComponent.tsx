@@ -7,7 +7,6 @@ import React, {
   useMemo,
   TouchEvent,
   CSSProperties,
-  useRef,
 } from 'react';
 import { SpringValues, animated, useSpring } from '@react-spring/web';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
@@ -28,25 +27,25 @@ function DraggableComponent<T>(
   props: PropsWithChildren<draggableComponentProps<T>>
 ): ReactElement {
   const id = useMemo(() => props.id || uuidv4(), []);
-  const componentRef = useRef<HTMLDivElement>(null);
   const {
     isHovering,
     isDragging,
     setIsDragging,
     hoveredTargetCoordinates,
-    setSourceDimentions,
     setSelectedElement,
   } = useContext(DraggableContext);
-  const [{ left, top, opacity }, draggedElementSpringApi] = useSpring<
+  const [{ left, top, opacity, width }, draggedElementSpringApi] = useSpring<
     SpringValues<{
       left: number;
       top: number;
       opacity: number;
+      width: number;
     }>
   >(() => ({
     left: 0,
     top: 0,
     opacity: 1,
+    height: id === isDragging ? 0 : 100,
     config: { mass: 5, tension: 2000, friction: 200 },
   }));
 
@@ -58,15 +57,6 @@ function DraggableComponent<T>(
         top: hoveredTargetCoordinates.y, // - offsetCoordinates.y,
       });
   }, [isHovering, isDragging, hoveredTargetCoordinates]);
-
-  useEffect(() => {
-    isDragging === id &&
-      componentRef.current &&
-      setSourceDimentions({
-        width: componentRef.current?.clientWidth,
-        height: componentRef.current?.clientHeight,
-      });
-  }, [isDragging]);
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     event.stopPropagation();
@@ -130,7 +120,7 @@ function DraggableComponent<T>(
   };
 
   return (
-    <div ref={componentRef} style={{ ...props.style, position: 'relative' }}>
+    <div style={{ ...props.style, position: 'relative' }}>
       <div
         style={{
           cursor: 'grab',
@@ -148,6 +138,7 @@ function DraggableComponent<T>(
           style={{
             // pointerEvents: 'none',
             opacity,
+            width,
           }}
         >
           {props.children}

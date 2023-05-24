@@ -76,13 +76,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
   );
   //const idElements = useMemo(() => initialElements.map(addIdToElement), []);
 
-  const tableElements = useMemo(
-    () => elements.filter((el) => el.tableId === tableId),
-    [elements]
-  );
-
   const transitions = useTransition(
-    tableElements.filter((el) => el.tableId === tableId),
+    elements.filter((el) => el.tableId === tableId),
     {
       key: (element: idType<T>) => element.id,
       update: (element) => ({
@@ -104,6 +99,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         opacity: 0,
         // maxHeight: '0px',
         gridTemplateRows: '0fr',
+        gridTemplateColumns: '0fr',
         outerWidth: '0px',
         transform: 'translateY(0px) scale(1)',
         boxShadow:
@@ -115,6 +111,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         opacity: 1,
         //maxHeight: '500px',
         gridTemplateRows: '1fr',
+        gridTemplateColumns: '1fr',
       },
       leave: {
         //transform: 'perspective(600px) rotateX(180deg)',
@@ -122,6 +119,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         opacity: 0,
         //maxHeight: '0px',
         gridTemplateRows: '0fr',
+        gridTemplateColumns: '0fr',
       },
       config: { mass: 5, tension: 2000, friction: 200 },
     }
@@ -143,58 +141,65 @@ function DroppableTable<T>(props: droppableTable<T>) {
   return (
     <div
       style={{
+        all: 'inherit',
         position: 'relative',
-        width: '100%',
+        boxSizing: 'border-box',
+        border: 'none',
+        padding: '0px',
+        margin: '0px',
         userSelect: 'none',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
       }}
     >
       {enableDrop && <DroppableSlot tableId={tableId} />}
       {transitions((style, element) => (
-        <animated.div
-          style={{
-            display: 'grid',
-            position: 'relative',
-            ...style,
-          }}
-          data-id={element.id}
-          onClick={selectElementHandler}
-        >
-          <DraggableComponent
-            id={element.id}
-            style={{ overflow: 'hidden' }}
-            tableId={tableId}
-            elementProps={element.item}
-            action={props.action}
-          >
-            <Suspense fallback={<div>loading component...</div>}>
-              <Component
-                {...(element.id === selectedElement?.id
-                  ? selectedElement.item
-                  : element.item)}
-              >
-                {/* test this out */}
-                <DroppableTable
-                  action={props.action}
-                  tableId={element.id}
-                  enableDrop={enableDrop}
-                />
-              </Component>
-            </Suspense>
-          </DraggableComponent>
-          {enableDrop && <DroppableSlot id={element.id} tableId={tableId} />}
-          <div
-            data-id={element.id}
+        <>
+          <animated.div
             style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              cursor: 'pointer',
+              display: 'grid',
+              position: 'relative',
+              ...style,
             }}
-            onClick={handleRemove}
+            data-id={element.id}
+            onClick={selectElementHandler}
           >
-            <TrashBasket width={25} height={25} color="red" />
-          </div>
-        </animated.div>
+            <DraggableComponent
+              id={element.id}
+              style={{ overflow: 'hidden' }}
+              tableId={tableId}
+              elementProps={element.item}
+              action={props.action}
+            >
+              <Suspense fallback={<div>loading component...</div>}>
+                <Component
+                  {...(element.id === selectedElement?.id
+                    ? selectedElement.item
+                    : element.item)}
+                >
+                  <DroppableTable
+                    action={props.action}
+                    tableId={element.id}
+                    enableDrop={enableDrop}
+                  />
+                </Component>
+              </Suspense>
+            </DraggableComponent>
+            <div
+              data-id={element.id}
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                cursor: 'pointer',
+              }}
+              onClick={handleRemove}
+            >
+              <TrashBasket width={25} height={25} color="red" />
+            </div>
+          </animated.div>
+          {enableDrop && <DroppableSlot id={element.id} tableId={tableId} />}
+        </>
       ))}
     </div>
   );
