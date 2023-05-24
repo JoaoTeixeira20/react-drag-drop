@@ -24,27 +24,29 @@ export const tableElements: tableElementsType[] = [
         flexDirection: 'column',
       },
       {
-        todotask: 'ability to select and edit current element',
-        flexDirection: 'column',
-      },
-      {
         todotask: 'intern table id duplicate control',
         flexDirection: 'column',
       },
-      { todotask: 'drag scrolling', flexDirection: 'column' },
+      { todotask: 'drag scrolling fix on mobile', flexDirection: 'column' },
     ],
   },
   {
     tableId: 'progress',
     action: 'move',
     elements: [
-      { todotask: 'recursive drag and drop elements', flexDirection: 'column' },
+      {todotask: 'delete child elements on parent removal', flexDirection: 'column' },
+      {todotask: 'fix snap element overflow size on text wrap', flexDirection: 'column' },
     ],
   },
   {
     tableId: 'done',
     action: 'move',
     elements: [
+      {
+        todotask: 'ability to select and edit current element',
+        flexDirection: 'column',
+      },
+      { todotask: 'recursive drag and drop elements', flexDirection: 'column' },
       { todotask: 'multi table drag and drop', flexDirection: 'column' },
       { todotask: 'drag actions (copy/move)', flexDirection: 'column' },
       { todotask: 'animated dragged element', flexDirection: 'column' },
