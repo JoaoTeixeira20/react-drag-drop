@@ -24,9 +24,8 @@ function ContextTestDrag() {
       <div
         style={{
           display: 'flex',
-          width: '100%',
-          justifyContent: 'space-around',
-          textAlign: 'center',
+          // width: '100%',
+          // justifyContent: 'space-around',
           //fontFamily: "'Trebuchet MS', Consolas, Open-Sans, Helvetica, Sans-Serif, monospace",
           //fontWeight: 'bold',
         }}

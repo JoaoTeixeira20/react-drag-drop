@@ -31,32 +31,9 @@ function DraggableComponent<T>(
     isHovering,
     isDragging,
     setIsDragging,
-    hoveredTargetCoordinates,
     setSelectedElement,
+    draggedElementSpringApi,
   } = useContext(DraggableContext);
-  const [{ left, top, opacity, width }, draggedElementSpringApi] = useSpring<
-    SpringValues<{
-      left: number;
-      top: number;
-      opacity: number;
-      width: number;
-    }>
-  >(() => ({
-    left: 0,
-    top: 0,
-    opacity: 1,
-    height: id === isDragging ? 0 : 100,
-    config: { mass: 5, tension: 2000, friction: 200 },
-  }));
-
-  useEffect(() => {
-    isHovering &&
-      isDragging === id &&
-      draggedElementSpringApi.start({
-        left: hoveredTargetCoordinates.x, // - offsetCoordinates.x,
-        top: hoveredTargetCoordinates.y, // - offsetCoordinates.y,
-      });
-  }, [isDragging, hoveredTargetCoordinates]);
 
   function handleDragStartSource(event: DragEvent<HTMLElement>) {
     event.stopPropagation();
@@ -134,18 +111,12 @@ function DraggableComponent<T>(
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
-        <animated.div
-          style={{
-            // pointerEvents: 'none',
-            opacity,
-            width,
-          }}
-        >
+        <div>
           {props.children}
-        </animated.div>
+        </div>
       </div>
       {isDragging === id && (
-        <DraggaBleComponentActive style={{ left, top, opacity }}>
+        <DraggaBleComponentActive>
           {props.children}
         </DraggaBleComponentActive>
       )}

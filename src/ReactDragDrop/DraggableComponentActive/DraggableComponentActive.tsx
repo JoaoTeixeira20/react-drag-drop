@@ -1,4 +1,4 @@
-import { SpringValues, animated, useSpring } from '@react-spring/web';
+import { animated, useSpring } from '@react-spring/web';
 import React, {
   PropsWithChildren,
   ReactElement,
@@ -8,22 +8,22 @@ import React, {
 import { createPortal } from 'react-dom';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 
-function DraggaBleComponentActive(
-  props: PropsWithChildren<{
-    style: SpringValues<{ left: number; top: number; opacity: number }>;
-  }>
-): ReactElement {
-  const { hoveredTargetCoordinates, isHovering } = useContext(DraggableContext);
+function DraggaBleComponentActive(props: PropsWithChildren): ReactElement {
+  const {
+    isHovering,
+    hoveredElementRef,
+    draggedElementSpring: { left, top, opacity },
+  } = useContext(DraggableContext);
   const elementRef = useRef<HTMLDivElement>(null);
 
   const spring = useSpring({
     width: isHovering
-      ? hoveredTargetCoordinates.width
+      ? hoveredElementRef.current?.clientWidth
       : elementRef.current?.clientWidth,
     height: isHovering
-      ? hoveredTargetCoordinates.height
+      ? hoveredElementRef.current?.clientHeight 
       : elementRef.current?.clientHeight,
-    config: { tension: 180, friction: 22 },
+    config: { tension: 180, friction: 22, clamp: true },
   });
 
   const domNode = document.getElementById('portal-draggable-element');
@@ -34,8 +34,9 @@ function DraggaBleComponentActive(
         ref={elementRef}
         style={{
           position: 'fixed',
-          top: props.style.top,
-          left: props.style.left,
+          top,
+          left,
+          opacity,
           pointerEvents: 'none',
           ...spring,
         }}

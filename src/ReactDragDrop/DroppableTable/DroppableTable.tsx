@@ -148,8 +148,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
         padding: 0,
         border: 'none',
         userSelect: 'none',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
+        // justifyContent: 'space-evenly',
+        // alignItems: 'center',
       }}
     >
       {enableDrop && <DroppableSlot tableId={tableId} />}
@@ -159,6 +159,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
             style={{
               display: 'grid',
               position: 'relative',
+              zIndex: element.id === selectedElement?.id ? 1 : 0,
               ...style,
             }}
             data-id={element.id}
@@ -195,7 +196,9 @@ function DroppableTable<T>(props: droppableTable<T>) {
               }}
               onClick={handleRemove}
             >
-              <TrashBasket width={25} height={25} color="red" />
+              {element.id === selectedElement?.id && (
+                <TrashBasket width={25} height={25} color="red" />
+              )}
             </div>
           </animated.div>
           {enableDrop && <DroppableSlot id={element.id} tableId={tableId} />}

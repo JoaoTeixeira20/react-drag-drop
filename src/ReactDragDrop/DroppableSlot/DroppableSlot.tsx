@@ -19,8 +19,9 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     isHovering,
     setIsHovering,
     hoveredElementRef,
-    setHoveredTargetCoordinates,
+    setHoveredElementSize,
     Component,
+    draggedElementSpringApi,
   } = useContext(DraggableContext);
 
   const spring = useSpring({
@@ -57,7 +58,9 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
         if (id === isHovering && hoveredElementRef.current && isDragging) {
           const { x, y, width, height } =
             hoveredElementRef.current?.getBoundingClientRect();
-          setHoveredTargetCoordinates({ x, y, width, height });
+          console.log(`drop x: ${x} y: ${y}`);
+          draggedElementSpringApi.start({ left: x, top: y });
+          setHoveredElementSize({ width, height });
         }
       },
       config: { mass: 1, tension: 180, friction: 12, clamp: true },
@@ -82,18 +85,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
   function handleDragEnterTarget(event: DragEvent<HTMLElement>) {
     event.preventDefault();
     event.stopPropagation();
-    // event.stopPropagation();
+    setIsHovering(id);
     hoveredElementRef.current = event.currentTarget;
-    if (hoveredElementRef.current) {
-      // check onRest callback on useSprings that corrects the correct snap value
-      // if the animation didn't end and the snap got incorrect
-      // also this cripples performance, need to refactor to an intersection observer
-      // approach insted of getBoundingClientRect
-      setIsHovering(hoveredElementRef.current.dataset['id'] as string);
-      // const { x, y, width, height } =
-      //   hoveredElementRef.current?.getBoundingClientRect();
-      // setHoveredTargetCoordinates({ x, y, width, height });
-    }
+    // if (hoveredElementRef.current) {
+    //   setIsHovering(hoveredElementRef.current.dataset['id'] as string);
+    // }
   }
 
   function handleDropTarget(event: DragEvent<HTMLDivElement>) {
@@ -130,8 +126,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     <div
       style={{
         position: 'relative',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
       }}
     >
       <animated.div

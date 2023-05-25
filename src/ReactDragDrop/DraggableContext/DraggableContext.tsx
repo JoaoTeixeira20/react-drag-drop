@@ -8,31 +8,34 @@ import React, {
   Dispatch,
 } from 'react';
 import { idType } from '../types/draggableLib.type';
-import { ComponentType } from '@react-spring/web';
+import { ComponentType, SpringRef, SpringValues, useSpring } from '@react-spring/web';
 import { polyfill } from 'mobile-drag-drop';
 import { addIdToElement } from '../helpers/helpers';
 polyfill({});
 
 type DraggableContextProps<T> = {
   Component: ComponentType<T>;
+  draggedElementSpring: SpringValues<{
+    left: number;
+    top: number;
+    opacity: number;
+  }>;
+  draggedElementSpringApi: SpringRef<{
+    left: number;
+    top: number;
+    opacity: number;
+  }>
   defaultComponentProps?: Record<keyof T, unknown>;
   elements: idType<T>[];
   setElements: Dispatch<SetStateAction<idType<T>[]>>;
   addElementWithId: (element: T, tableId: string) => void;
   isHovering: string | null;
   setIsHovering: Dispatch<SetStateAction<string | null>>;
+  hoveredElementSize: {width: number, height: number};
+  setHoveredElementSize: Dispatch<SetStateAction<{width: number, height: number}>>;
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
   hoveredElementRef: MutableRefObject<HTMLElement | null>;
-  hoveredTargetCoordinates: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  setHoveredTargetCoordinates: Dispatch<
-    SetStateAction<{ x: number; y: number; width: number; height: number }>
-  >;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
   selectElement: (id: string | null) => void;
@@ -55,15 +58,23 @@ const DraggableContextProvider = <T,>(
   const [isHovering, setIsHovering] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<string | null>(null);
   const hoveredElementRef = useRef<HTMLElement | null>(null);
-  const [hoveredTargetCoordinates, setHoveredTargetCoordinates] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const [hoveredElementSize, setHoveredElementSize] = useState<{width: number, height: number}>({width: 0, height: 0})
   const [selectedElement, setSelectedElement] = useState<idType<T> | null>(
     null
   );
+
+  const [draggedElementSpring, draggedElementSpringApi] = useSpring<
+    SpringValues<{
+      left: number;
+      top: number;
+      opacity: number;
+    }>
+  >(() => ({
+    left: 0,
+    top: 0,
+    opacity: 1,
+    config: { mass: 5, tension: 2000, friction: 200 },
+  }));
 
   function addElementWithId(element: T, tableId: string) {
     setElements((prev) => [...prev, addIdToElement<T>(element, tableId)]);
@@ -92,6 +103,8 @@ const DraggableContextProvider = <T,>(
 
   const value = {
     Component: props.Component,
+    draggedElementSpring,
+    draggedElementSpringApi,
     defaultComponentProps: props.defaultComponentProps,
     elements,
     setElements,
@@ -101,8 +114,8 @@ const DraggableContextProvider = <T,>(
     isDragging,
     setIsDragging,
     hoveredElementRef,
-    hoveredTargetCoordinates,
-    setHoveredTargetCoordinates,
+    hoveredElementSize,
+    setHoveredElementSize,
     selectedElement,
     setSelectedElement,
     selectElement,
