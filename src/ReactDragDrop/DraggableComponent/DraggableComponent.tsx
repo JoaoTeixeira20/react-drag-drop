@@ -3,12 +3,10 @@ import React, {
   DragEvent,
   PropsWithChildren,
   ReactElement,
-  useEffect,
   useMemo,
   TouchEvent,
   CSSProperties,
 } from 'react';
-import { SpringValues, animated, useSpring } from '@react-spring/web';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -43,7 +41,6 @@ function DraggableComponent<T>(
     draggedElementSpringApi.set({
       left: event.clientX,
       top: event.clientY,
-      opacity: 0.8,
     });
     //hide default drag display
     const img = new Image();
@@ -62,22 +59,15 @@ function DraggableComponent<T>(
   }
 
   const handleDragSource = (event: DragEvent<HTMLElement>) => {
-    //event.preventDefault();
-    // event.stopPropagation();
     !isHovering &&
       draggedElementSpringApi.start({
-        left: event.clientX, // - offsetCoordinates.x,
-        top: event.clientY, // - offsetCoordinates.y,
+        left: event.clientX,
+        top: event.clientY,
       });
   };
 
   const handleDragEndSource = () => {
     setIsDragging(null);
-    draggedElementSpringApi.start({
-      left: 0,
-      top: 0,
-      opacity: 1,
-    });
   };
 
   const handleTouchStart = (event: TouchEvent<HTMLElement>) => {

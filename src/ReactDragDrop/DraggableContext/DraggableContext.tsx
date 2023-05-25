@@ -8,7 +8,12 @@ import React, {
   Dispatch,
 } from 'react';
 import { idType } from '../types/draggableLib.type';
-import { ComponentType, SpringRef, SpringValues, useSpring } from '@react-spring/web';
+import {
+  ComponentType,
+  SpringRef,
+  SpringValues,
+  useSpring,
+} from '@react-spring/web';
 import { polyfill } from 'mobile-drag-drop';
 import { addIdToElement } from '../helpers/helpers';
 polyfill({});
@@ -18,21 +23,21 @@ type DraggableContextProps<T> = {
   draggedElementSpring: SpringValues<{
     left: number;
     top: number;
-    opacity: number;
   }>;
   draggedElementSpringApi: SpringRef<{
     left: number;
     top: number;
-    opacity: number;
-  }>
+  }>;
   defaultComponentProps?: Record<keyof T, unknown>;
   elements: idType<T>[];
   setElements: Dispatch<SetStateAction<idType<T>[]>>;
   addElementWithId: (element: T, tableId: string) => void;
   isHovering: string | null;
   setIsHovering: Dispatch<SetStateAction<string | null>>;
-  hoveredElementSize: {width: number, height: number};
-  setHoveredElementSize: Dispatch<SetStateAction<{width: number, height: number}>>;
+  hoveredElementSize: { width: number; height: number };
+  setHoveredElementSize: Dispatch<
+    SetStateAction<{ width: number; height: number }>
+  >;
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
   hoveredElementRef: MutableRefObject<HTMLElement | null>;
@@ -58,7 +63,10 @@ const DraggableContextProvider = <T,>(
   const [isHovering, setIsHovering] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<string | null>(null);
   const hoveredElementRef = useRef<HTMLElement | null>(null);
-  const [hoveredElementSize, setHoveredElementSize] = useState<{width: number, height: number}>({width: 0, height: 0})
+  const [hoveredElementSize, setHoveredElementSize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
   const [selectedElement, setSelectedElement] = useState<idType<T> | null>(
     null
   );
@@ -67,7 +75,6 @@ const DraggableContextProvider = <T,>(
     SpringValues<{
       left: number;
       top: number;
-      opacity: number;
     }>
   >(() => ({
     left: 0,
@@ -91,15 +98,6 @@ const DraggableContextProvider = <T,>(
       );
     setSelectedElement(null);
   }
-
-  // useEffect(() => {
-  //   if(hoveredTargetCoordinates.width !== sourceDimentions.width){
-  //     setSourceDimentions((prev) => ({
-  //       ...prev,
-  //       width: hoveredTargetCoordinates.width,
-  //     }));
-  //   };
-  // }, [hoveredTargetCoordinates]);
 
   const value = {
     Component: props.Component,

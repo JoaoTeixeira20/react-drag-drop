@@ -74,10 +74,10 @@ function DroppableTable<T>(props: droppableTable<T>) {
       ]),
     []
   );
-  //const idElements = useMemo(() => initialElements.map(addIdToElement), []);
+  const transitionElements = useMemo(() => elements.filter((el) => el.tableId === tableId),[elements]);
 
   const transitions = useTransition(
-    elements.filter((el) => el.tableId === tableId),
+    transitionElements,
     {
       key: (element: idType<T>) => element.id,
       update: (element) => ({
@@ -92,6 +92,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
           element.id === selectedElement?.id
             ? '0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
             : '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
+        // gridTemplateRows: isDragging === element.id && props.action === 'move' ? '0fr' : '1fr',
+        // gridTemplateColumns: isDragging === element.id && props.action === 'move'  ? '0fr' : '1fr',
       }),
       from: {
         //transform: 'perspective(600px) rotateX(180deg)',
@@ -148,8 +150,6 @@ function DroppableTable<T>(props: droppableTable<T>) {
         padding: 0,
         border: 'none',
         userSelect: 'none',
-        // justifyContent: 'space-evenly',
-        // alignItems: 'center',
       }}
     >
       {enableDrop && <DroppableSlot tableId={tableId} />}

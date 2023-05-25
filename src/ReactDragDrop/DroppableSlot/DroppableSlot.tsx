@@ -29,13 +29,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     parentGridTemplateColumns: isDragging ? '1fr' : '0fr',
     childMinWidth: isDragging ? 25 : 0,
     childMinHeigth: isDragging ? 25 : 0,
-    // onRest: () => {
-    //   if (id === isHovering && hoveredElementRef.current && isDragging) {
-    //     const { x, y, width, height } =
-    //       hoveredElementRef.current?.getBoundingClientRect();
-    //     setHoveredTargetCoordinates({ x, y, width, height });
-    //   }
-    // },
     config: { mass: 5, tension: 2000, friction: 200 },
   });
 
@@ -55,13 +48,21 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
         gridTemplateColumns: '0fr',
       },
       onRest: () => {
-        if (id === isHovering && hoveredElementRef.current && isDragging) {
-          const { x, y, width, height } =
-            hoveredElementRef.current?.getBoundingClientRect();
-          console.log(`drop x: ${x} y: ${y}`);
-          draggedElementSpringApi.start({ left: x, top: y });
-          setHoveredElementSize({ width, height });
-        }
+        /* 
+          although I hate this solution, seems that onRest callback is not being called
+          at the end of the animation, so when the element snaps on the position it will
+          eventually fit on dropping position but sometimes unaligned, so this timeout
+          will wait for the element to finish the animation to be snapped perfectly on
+          it's predictable dropping position
+        */
+        setTimeout(() => {
+          if (id === isHovering && hoveredElementRef.current && isDragging) {
+            const { x, y, width, height } =
+              hoveredElementRef.current?.getBoundingClientRect();
+            draggedElementSpringApi.start({ left: x, top: y });
+            setHoveredElementSize({ width, height });
+          }
+        }, 100);
       },
       config: { mass: 1, tension: 180, friction: 12, clamp: true },
     }
@@ -73,12 +74,10 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     if (!isHovering) {
       setIsHovering(event.currentTarget.dataset['id'] || null);
     }
-    //event.dataTransfer.effectAllowed = 'move';
   }
 
   function handleDragLeaveTarget(event: DragEvent<HTMLElement>) {
     event.preventDefault();
-    event.stopPropagation();
     setIsHovering(null);
   }
 
@@ -87,22 +86,16 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     event.stopPropagation();
     setIsHovering(id);
     hoveredElementRef.current = event.currentTarget;
-    // if (hoveredElementRef.current) {
-    //   setIsHovering(hoveredElementRef.current.dataset['id'] as string);
-    // }
   }
 
   function handleDropTarget(event: DragEvent<HTMLDivElement>) {
     event.preventDefault();
-    // event.stopPropagation();
     setIsDragging(null);
     setIsHovering(null);
     hoveredElementRef.current = null;
     const elementDropped = event.dataTransfer.getData('componentProps');
     const draggedId = event.dataTransfer.getData('id');
-    // const draggedTableId = event.dataTransfer.getData('tableId');
     const droppedId = event.currentTarget.dataset['id'] as string;
-    //const action = event.dataTransfer.effectAllowed;
     const action = event.dataTransfer.getData('action');
     const index = elements.map((element) => element.id).indexOf(droppedId);
     const element = JSON.parse(elementDropped) as T;
