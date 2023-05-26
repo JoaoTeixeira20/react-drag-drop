@@ -3,6 +3,7 @@ import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
 import { animated, useSpring, useTransition } from '@react-spring/web';
+import DroppableTable from '../DroppableTable/DroppableTable';
 
 type DroppableSlotProps = {
   id?: string;
@@ -33,7 +34,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
   });
 
   const transitions = useTransition(
-    id === isHovering ? elements.find((el) => el.id === isDragging)?.item : [],
+    id === isHovering ? elements.find((el) => el.id === isDragging) : [],
     {
       from: {
         gridTemplateRows: '0fr',
@@ -49,20 +50,22 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
       },
       onRest: () => {
         /* 
-          although I hate this solution, seems that onRest callback is not being called
-          at the end of the animation, so when the element snaps on the position it will
-          eventually fit on dropping position but sometimes unaligned, so this timeout
-          will wait for the element to finish the animation to be snapped perfectly on
-          it's predictable dropping position
+          Seems that onRest callback is not considering the text-wrap measurements at the
+          end of the animation, so when the element snaps on the position sometimes will be
+          unaligned, so this timeout will wait for the element to finish the animation to be
+          snapped on it's predictable dropping position, also some compensation on the 
+          measurements of the getBoundingClientRect, but this eventually fails the more nested
+          elements are on the dragging element, further investigation needed to have a decent
+          solution for this
         */
         setTimeout(() => {
           if (id === isHovering && hoveredElementRef.current && isDragging) {
             const { x, y, width, height } =
               hoveredElementRef.current?.getBoundingClientRect();
             draggedElementSpringApi.start({ left: x, top: y });
-            setHoveredElementSize({ width, height });
+            setHoveredElementSize({ width: width + 2, height: height + 2 });
           }
-        }, 100);
+        }, 200);
       },
       config: { mass: 1, tension: 180, friction: 12, clamp: true },
     }
@@ -161,7 +164,9 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
                 }}
               >
                 <Suspense fallback={<div>loading component...</div>}>
-                  <Component {...element}></Component>
+                  <Component {...element?.item}>
+                    <DroppableTable action={'move'} tableId={element?.id} enableDrop={false}></DroppableTable>
+                  </Component>
                 </Suspense>
               </div>
             </animated.div>
