@@ -101,14 +101,10 @@ function DraggableComponent<T>(
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
-        <div>
-          {props.children}
-        </div>
+        <div>{props.children}</div>
       </div>
       {isDragging === id && (
-        <DraggaBleComponentActive>
-          {props.children}
-        </DraggaBleComponentActive>
+        <DraggaBleComponentActive>{props.children}</DraggaBleComponentActive>
       )}
     </div>
   );

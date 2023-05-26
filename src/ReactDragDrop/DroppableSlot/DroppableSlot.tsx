@@ -1,9 +1,17 @@
-import React, { DragEvent, Suspense, useContext, useMemo } from 'react';
+import React, {
+  DragEvent,
+  Suspense,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
 import { animated, useSpring, useTransition } from '@react-spring/web';
 import DroppableTable from '../DroppableTable/DroppableTable';
+import { debounce } from '../helpers/helpers';
 
 type DroppableSlotProps = {
   id?: string;
@@ -24,6 +32,9 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     Component,
     draggedElementSpringApi,
   } = useContext(DraggableContext);
+
+  const resizedRef = useRef<HTMLDivElement>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const spring = useSpring({
     parentGridTemplateRows: isDragging ? '1fr' : '0fr',
@@ -48,28 +59,35 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
         gridTemplateRows: '0fr',
         gridTemplateColumns: '0fr',
       },
-      onRest: () => {
-        /* 
-          Seems that onRest callback is not considering the text-wrap measurements at the
-          end of the animation, so when the element snaps on the position sometimes will be
-          unaligned, so this timeout will wait for the element to finish the animation to be
-          snapped on it's predictable dropping position, also some compensation on the 
-          measurements of the getBoundingClientRect, but this eventually fails the more nested
-          elements are on the dragging element, further investigation needed to have a decent
-          solution for this
-        */
-        setTimeout(() => {
-          if (id === isHovering && hoveredElementRef.current && isDragging) {
-            const { x, y, width, height } =
-              hoveredElementRef.current?.getBoundingClientRect();
-            draggedElementSpringApi.start({ left: x, top: y });
-            setHoveredElementSize({ width: width + 2, height: height + 2 });
-          }
-        }, 200);
-      },
       config: { mass: 1, tension: 180, friction: 12, clamp: true },
     }
   );
+
+  useEffect(() => {
+    if (id === isHovering && isDragging) {
+      if (!resizeObserverRef.current) {
+        resizeObserverRef.current = new ResizeObserver(
+          debounce((entries: ResizeObserverEntry[]) => {
+            const { width, height } = entries[0].contentRect;
+            setHoveredElementSize({ width: width, height: height });
+            if (resizedRef.current) {
+              const { x, y } = resizedRef.current?.getBoundingClientRect();
+              draggedElementSpringApi.start({ left: x, top: y });
+            }
+          }, 20)
+        );
+        resizeObserverRef.current.observe(
+          resizedRef.current as unknown as Element
+        );
+      }
+      return;
+    }
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
+      return;
+    }
+  }, [isHovering]);
 
   function handleDragOverTarget(event: DragEvent<HTMLElement>) {
     event.preventDefault();
@@ -135,6 +153,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           gridTemplateColumns: spring.parentGridTemplateColumns,
         }}
         data-id={id}
+        ref={resizedRef}
         onDragEnter={handleDragEnterTarget}
         onDragOver={handleDragOverTarget}
         onDragLeave={handleDragLeaveTarget}
@@ -165,7 +184,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
               >
                 <Suspense fallback={<div>loading component...</div>}>
                   <Component {...element?.item}>
-                    <DroppableTable action={'move'} tableId={element?.id} enableDrop={false}></DroppableTable>
+                    <DroppableTable
+                      action={'move'}
+                      tableId={element?.id}
+                      enableDrop={false}
+                    ></DroppableTable>
                   </Component>
                 </Suspense>
               </div>

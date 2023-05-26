@@ -34,8 +34,14 @@ export const tableElements: tableElementsType[] = [
     tableId: 'progress',
     action: 'move',
     elements: [
-      {todotask: 'delete child elements on parent removal', flexDirection: 'column' },
-      {todotask: 'fix snap element overflow size on text wrap', flexDirection: 'column' },
+      {
+        todotask: 'delete child elements on parent removal',
+        flexDirection: 'column',
+      },
+      {
+        todotask: 'fix snap element overflow size on text wrap',
+        flexDirection: 'column',
+      },
     ],
   },
   {
