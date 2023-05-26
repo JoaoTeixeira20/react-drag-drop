@@ -15,3 +15,11 @@ export const debounce = <T extends (...args: any[]) => void>(
     timer = setTimeout(() => f.apply(this, args), delay);
   };
 };
+
+export const asyncGetBoundingClientRect = (
+  element: Element
+): Promise<DOMRect> => {
+  return new Promise((res) => {
+    res(element.getBoundingClientRect());
+  });
+};

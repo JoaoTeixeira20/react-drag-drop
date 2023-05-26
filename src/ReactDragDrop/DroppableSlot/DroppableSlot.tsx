@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { animated, useSpring, useTransition } from '@react-spring/web';
 import DroppableTable from '../DroppableTable/DroppableTable';
-import { debounce } from '../helpers/helpers';
+import { asyncGetBoundingClientRect, debounce } from '../helpers/helpers';
 
 type DroppableSlotProps = {
   id?: string;
@@ -71,8 +71,12 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
             const { width, height } = entries[0].contentRect;
             setHoveredElementSize({ width: width, height: height });
             if (resizedRef.current) {
-              const { x, y } = resizedRef.current?.getBoundingClientRect();
-              draggedElementSpringApi.start({ left: x, top: y });
+              asyncGetBoundingClientRect(resizedRef.current).then(
+                ({ x, y }) => {
+                  draggedElementSpringApi.start({ left: x, top: y });
+                  draggedElementSpringApi.start({ left: x, top: y });
+                }
+              );
             }
           }, 20)
         );
