@@ -9,7 +9,7 @@ import React, {
 import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
-import { animated, useSpring, useTransition } from '@react-spring/web';
+import { animated, useTransition } from '@react-spring/web';
 import DroppableTable from '../DroppableTable/DroppableTable';
 import { asyncGetBoundingClientRect, debounce } from '../helpers/helpers';
 
@@ -31,18 +31,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     setHoveredElementSize,
     Component,
     draggedElementSpringApi,
+    droppableHighlightSpring,
   } = useContext(DraggableContext);
 
   const resizedRef = useRef<HTMLDivElement>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-
-  const spring = useSpring({
-    parentGridTemplateRows: isDragging ? '1fr' : '0fr',
-    parentGridTemplateColumns: isDragging ? '1fr' : '0fr',
-    childMinWidth: isDragging ? 25 : 0,
-    childMinHeigth: isDragging ? 25 : 0,
-    config: { mass: 5, tension: 2000, friction: 200 },
-  });
 
   const transitions = useTransition(
     id === isHovering ? elements.find((el) => el.id === isDragging) : [],
@@ -73,7 +66,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
             if (resizedRef.current) {
               asyncGetBoundingClientRect(resizedRef.current).then(
                 ({ x, y }) => {
-                  draggedElementSpringApi.start({ left: x, top: y });
                   draggedElementSpringApi.start({ left: x, top: y });
                 }
               );
@@ -153,8 +145,8 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           boxSizing: 'border-box',
           backgroundColor: 'orange',
           boxShadow: 'inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)',
-          gridTemplateRows: spring.parentGridTemplateRows,
-          gridTemplateColumns: spring.parentGridTemplateColumns,
+          gridTemplateRows: droppableHighlightSpring.parentGridTemplateRows,
+          gridTemplateColumns: droppableHighlightSpring.parentGridTemplateColumns,
         }}
         data-id={id}
         ref={resizedRef}
@@ -168,8 +160,8 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
             overflow: 'hidden',
             position: 'relative',
             pointerEvents: 'none',
-            minWidth: spring.childMinWidth,
-            minHeight: spring.childMinHeigth,
+            minWidth: droppableHighlightSpring.childMinWidth,
+            minHeight: droppableHighlightSpring.childMinHeigth,
           }}
         >
           {transitions((style, element) => (

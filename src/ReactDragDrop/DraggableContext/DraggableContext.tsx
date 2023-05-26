@@ -28,6 +28,12 @@ type DraggableContextProps<T> = {
     left: number;
     top: number;
   }>;
+  droppableHighlightSpring: SpringValues<{
+    parentGridTemplateRows: string,
+    parentGridTemplateColumns: string,
+    childMinWidth: number,
+    childMinHeigth: number,
+  }>;
   defaultComponentProps?: Record<keyof T, unknown>;
   elements: idType<T>[];
   setElements: Dispatch<SetStateAction<idType<T>[]>>;
@@ -83,6 +89,19 @@ const DraggableContextProvider = <T,>(
     config: { mass: 5, tension: 2000, friction: 200 },
   }));
 
+  const droppableHighlightSpring = useSpring<SpringValues<{
+    parentGridTemplateRows: string,
+    parentGridTemplateColumns: string,
+    childMinWidth: number,
+    childMinHeigth: number,
+  }>>({
+    parentGridTemplateRows: isDragging ? '1fr' : '0fr',
+    parentGridTemplateColumns: isDragging ? '1fr' : '0fr',
+    childMinWidth: isDragging ? 25 : 0,
+    childMinHeigth: isDragging ? 25 : 0,
+    config: { mass: 5, tension: 2000, friction: 200 },
+  });
+
   function addElementWithId(element: T, tableId: string) {
     setElements((prev) => [...prev, addIdToElement<T>(element, tableId)]);
   }
@@ -103,6 +122,7 @@ const DraggableContextProvider = <T,>(
     Component: props.Component,
     draggedElementSpring,
     draggedElementSpringApi,
+    droppableHighlightSpring,
     defaultComponentProps: props.defaultComponentProps,
     elements,
     setElements,
