@@ -58,8 +58,21 @@ function DroppableTable<T>(props: droppableTable<T>) {
     selectedElement,
   } = useContext(DraggableContext);
 
+  const transitionElements = useMemo(
+    () => elements.filter((el) => el.tableId === tableId),
+    [elements]
+  );
+
   const enableDrop = useMemo(
     () => (isDragging === props.tableId ? false : props.enableDrop),
+    [isDragging]
+  );
+
+  const draggedIndex = useMemo(
+    () =>
+      isDragging
+        ? transitionElements.map((el) => el.id).indexOf(isDragging || '')
+        : -1,
     [isDragging]
   );
 
@@ -74,58 +87,56 @@ function DroppableTable<T>(props: droppableTable<T>) {
       ]),
     []
   );
-  const transitionElements = useMemo(() => elements.filter((el) => el.tableId === tableId),[elements]);
 
-  const transitions = useTransition(
-    transitionElements,
-    {
-      key: (element: idType<T>) => element.id,
-      update: (element) => ({
-        outlineWidth: element.id === selectedElement?.id ? '2px' : '0px',
-        transform:
-          element.id === selectedElement?.id
-            ? `translateY(6px) scale(1.02)`
-            : `translateY(0px) scale(1)`,
-        backgroundColor:
-          element.id === selectedElement?.id ? 'transparent' : 'transparent',
-        boxShadow:
-          element.id === selectedElement?.id
-            ? '0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
-            : '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
-        // gridTemplateRows: isDragging === element.id && props.action === 'move' ? '0fr' : '1fr',
-        // gridTemplateColumns: isDragging === element.id && props.action === 'move'  ? '0fr' : '1fr',
-      }),
-      from: {
-        //transform: 'perspective(600px) rotateX(180deg)',
-        color: 'transparent',
-        opacity: 0,
-        // maxHeight: '0px',
-        gridTemplateRows: '0fr',
-        gridTemplateColumns: '0fr',
-        outerWidth: '0px',
-        transform: 'translateY(0px) scale(1)',
-        boxShadow:
-          '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
-      },
-      enter: {
-        //transform: 'perspective(600px) rotateX(0deg)',
-        color: 'black',
-        opacity: 1,
-        //maxHeight: '500px',
-        gridTemplateRows: '1fr',
-        gridTemplateColumns: '1fr',
-      },
-      leave: {
-        //transform: 'perspective(600px) rotateX(180deg)',
-        color: 'transparent',
-        opacity: 0,
-        //maxHeight: '0px',
-        gridTemplateRows: '0fr',
-        gridTemplateColumns: '0fr',
-      },
-      config: { mass: 5, tension: 2000, friction: 200 },
-    }
-  );
+  const transitions = useTransition(transitionElements, {
+    key: (element: idType<T>) => element.id,
+    update: (element) => ({
+      outlineWidth: element.id === selectedElement?.id ? '2px' : '0px',
+      transform:
+        element.id === selectedElement?.id
+          ? `translateY(6px) scale(1.02)`
+          : `translateY(0px) scale(1)`,
+      backgroundColor:
+        element.id === selectedElement?.id ? 'transparent' : 'transparent',
+      boxShadow:
+        element.id === selectedElement?.id
+          ? '0px -6px 13px 0px rgba(238, 255, 0, 0.75), inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)'
+          : '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
+      gridTemplateRows:
+        isDragging === element.id && props.action === 'move' ? '0fr' : '1fr',
+      gridTemplateColumns:
+        isDragging === element.id && props.action === 'move' ? '0fr' : '1fr',
+    }),
+    from: {
+      //transform: 'perspective(600px) rotateX(180deg)',
+      color: 'transparent',
+      opacity: 0,
+      // maxHeight: '0px',
+      gridTemplateRows: '0fr',
+      gridTemplateColumns: '0fr',
+      outerWidth: '0px',
+      transform: 'translateY(0px) scale(1)',
+      boxShadow:
+        '0px 0px 0px 0px rgba(238, 255, 0, 0.75), inset 0px 0px 0px 0px rgba(251, 255, 0, 0.75)',
+    },
+    enter: {
+      //transform: 'perspective(600px) rotateX(0deg)',
+      color: 'black',
+      opacity: 1,
+      //maxHeight: '500px',
+      gridTemplateRows: '1fr',
+      gridTemplateColumns: '1fr',
+    },
+    leave: {
+      //transform: 'perspective(600px) rotateX(180deg)',
+      color: 'transparent',
+      opacity: 0,
+      //maxHeight: '0px',
+      gridTemplateRows: '0fr',
+      gridTemplateColumns: '0fr',
+    },
+    config: { mass: 5, tension: 2000, friction: 200 },
+  });
 
   function handleRemove(event: SyntheticEvent<HTMLDivElement>) {
     event.stopPropagation();
@@ -152,8 +163,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
         userSelect: 'none',
       }}
     >
-      {enableDrop && <DroppableSlot tableId={tableId} />}
-      {transitions((style, element) => (
+      {enableDrop && draggedIndex !== 0 && <DroppableSlot tableId={tableId} />}
+      {transitions((style, element, _, index) => (
         <>
           <animated.div
             style={{
@@ -201,7 +212,11 @@ function DroppableTable<T>(props: droppableTable<T>) {
               )}
             </div>
           </animated.div>
-          {enableDrop && <DroppableSlot id={element.id} tableId={tableId} />}
+          {enableDrop &&
+            isDragging !== element.id &&
+            index !== draggedIndex - 1 && (
+              <DroppableSlot id={element.id} tableId={tableId} />
+            )}
         </>
       ))}
     </div>
