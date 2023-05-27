@@ -14,7 +14,7 @@ import TestEditComponent from './TestEditComponent';
 function ContextTestDrag() {
   return (
     <DraggableContextProvider<testComponentProps>
-      Component={Component}
+      BaseDragComponent={Component}
       defaultComponentProps={{ todotask: 'foo', flexDirection: 'column' }}
     >
       <div style={{ display: 'flex', flexDirection: 'row' }}>

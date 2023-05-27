@@ -4,14 +4,12 @@ export type idType<T> = {
   item: T;
 };
 
-export type elementType = {
-  width: string | number;
-  height: string | number;
-  content: {
-    categoryIndex: number;
-    componentIndex: number;
-  };
-};
+export type contextConfigType = {
+  droppableSlotSize: {
+    width: number,
+    height: number,
+  }
+}
 
 export type actionType =
   | 'none'

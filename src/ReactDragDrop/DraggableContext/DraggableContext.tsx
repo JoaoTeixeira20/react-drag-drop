@@ -2,12 +2,10 @@ import React, {
   PropsWithChildren,
   useState,
   createContext,
-  useRef,
-  MutableRefObject,
   SetStateAction,
   Dispatch,
 } from 'react';
-import { idType } from '../types/draggableLib.type';
+import { contextConfigType, idType } from '../types/draggableLib.type';
 import {
   ComponentType,
   SpringRef,
@@ -19,7 +17,7 @@ import { addIdToElement } from '../helpers/helpers';
 polyfill({});
 
 type DraggableContextProps<T> = {
-  Component: ComponentType<T>;
+  BaseDragComponent: ComponentType<T>;
   draggedElementSpring: SpringValues<{
     left: number;
     top: number;
@@ -46,16 +44,17 @@ type DraggableContextProps<T> = {
   >;
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
-  hoveredElementRef: MutableRefObject<HTMLElement | null>;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
   selectElement: (id: string | null) => void;
   submitEditedElement: () => void;
+  config?: contextConfigType,
 };
 
 type DraggableContextProviderProps<T> = {
-  Component: ComponentType<T>;
+  BaseDragComponent: ComponentType<T>;
   defaultComponentProps?: Record<keyof T, unknown>;
+  config?: contextConfigType,
 };
 
 const DraggableContext = createContext<DraggableContextProps<any>>(
@@ -68,7 +67,6 @@ const DraggableContextProvider = <T,>(
   const [elements, setElements] = useState<idType<T>[]>([]);
   const [isHovering, setIsHovering] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const hoveredElementRef = useRef<HTMLElement | null>(null);
   const [hoveredElementSize, setHoveredElementSize] = useState<{
     width: number;
     height: number;
@@ -97,8 +95,8 @@ const DraggableContextProvider = <T,>(
   }>>({
     parentGridTemplateRows: isDragging ? '1fr' : '0fr',
     parentGridTemplateColumns: isDragging ? '1fr' : '0fr',
-    childMinWidth: isDragging ? 25 : 0,
-    childMinHeigth: isDragging ? 25 : 0,
+    childMinWidth: isDragging ? props.config?.droppableSlotSize.width : 0,
+    childMinHeigth: isDragging ? props.config?.droppableSlotSize.height : 0,
     config: { mass: 5, tension: 2000, friction: 200 },
   });
 
@@ -119,7 +117,7 @@ const DraggableContextProvider = <T,>(
   }
 
   const value = {
-    Component: props.Component,
+    BaseDragComponent: props.BaseDragComponent,
     draggedElementSpring,
     draggedElementSpringApi,
     droppableHighlightSpring,
@@ -131,13 +129,13 @@ const DraggableContextProvider = <T,>(
     setIsHovering,
     isDragging,
     setIsDragging,
-    hoveredElementRef,
     hoveredElementSize,
     setHoveredElementSize,
     selectedElement,
     setSelectedElement,
     selectElement,
     submitEditedElement,
+    config: props.config,
   };
 
   return (
@@ -147,5 +145,21 @@ const DraggableContextProvider = <T,>(
     </DraggableContext.Provider>
   );
 };
+
+const defaultProps: DraggableContextProviderProps<{foo: string, bar: string}> = {
+  BaseDragComponent: ((props) => <div>{`foo: ${props.foo} bar: ${props.bar}`}</div>),
+  config: {
+    droppableSlotSize: {
+      height: 25,
+      width: 25,
+    }
+  },
+  defaultComponentProps: {
+    foo: 'samplefoo',
+    bar: 'samplebar',
+  }
+}
+
+DraggableContextProvider.defaultProps = defaultProps;
 
 export { DraggableContextProvider, DraggableContext };

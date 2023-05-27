@@ -52,7 +52,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
   const {
     elements,
     setElements,
-    Component,
+    BaseDragComponent,
     isDragging,
     selectElement,
     selectedElement,
@@ -184,7 +184,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
               action={props.action}
             >
               <Suspense fallback={<div>loading component...</div>}>
-                <Component
+                <BaseDragComponent
                   {...(element.id === selectedElement?.id
                     ? selectedElement.item
                     : element.item)}
@@ -194,7 +194,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
                     tableId={element.id}
                     enableDrop={enableDrop}
                   />
-                </Component>
+                </BaseDragComponent>
               </Suspense>
             </DraggableComponent>
             <div

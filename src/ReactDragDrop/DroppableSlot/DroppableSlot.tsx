@@ -27,11 +27,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     setIsDragging,
     isHovering,
     setIsHovering,
-    hoveredElementRef,
     setHoveredElementSize,
-    Component,
+    BaseDragComponent,
     draggedElementSpringApi,
     droppableHighlightSpring,
+    config,
   } = useContext(DraggableContext);
 
   const resizedRef = useRef<HTMLDivElement>(null);
@@ -61,8 +61,7 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
       if (!resizeObserverRef.current) {
         resizeObserverRef.current = new ResizeObserver(
           debounce((entries: ResizeObserverEntry[]) => {
-            const { width, height } = entries[0].contentRect;
-            setHoveredElementSize({ width: width, height: height });
+            const { width, height } = entries[0].contentRect;setHoveredElementSize({ width: width, height: height });
             if (resizedRef.current) {
               asyncGetBoundingClientRect(resizedRef.current).then(
                 ({ x, y }) => {
@@ -102,14 +101,12 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     event.preventDefault();
     event.stopPropagation();
     setIsHovering(id);
-    hoveredElementRef.current = event.currentTarget;
   }
 
   function handleDropTarget(event: DragEvent<HTMLDivElement>) {
     event.preventDefault();
     setIsDragging(null);
     setIsHovering(null);
-    hoveredElementRef.current = null;
     const elementDropped = event.dataTransfer.getData('componentProps');
     const draggedId = event.dataTransfer.getData('id');
     const droppedId = event.currentTarget.dataset['id'] as string;
@@ -146,7 +143,8 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
           backgroundColor: 'orange',
           boxShadow: 'inset 0px -6px 13px 0px rgba(251, 255, 0, 0.75)',
           gridTemplateRows: droppableHighlightSpring.parentGridTemplateRows,
-          gridTemplateColumns: droppableHighlightSpring.parentGridTemplateColumns,
+          gridTemplateColumns:
+            droppableHighlightSpring.parentGridTemplateColumns,
         }}
         data-id={id}
         ref={resizedRef}
@@ -179,13 +177,13 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
                 }}
               >
                 <Suspense fallback={<div>loading component...</div>}>
-                  <Component {...element?.item}>
+                  <BaseDragComponent {...element?.item}>
                     <DroppableTable
                       action={'move'}
                       tableId={element?.id}
                       enableDrop={false}
                     ></DroppableTable>
-                  </Component>
+                  </BaseDragComponent>
                 </Suspense>
               </div>
             </animated.div>
