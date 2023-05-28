@@ -10,7 +10,7 @@ type tableElementsType = {
 export const tableElements: tableElementsType[] = [
   {
     tableId: 'todo',
-    action: 'move',
+    action: 'copy',
     elements: [
       { todotask: 'jest unit tests', flexDirection: 'column' },
       { todotask: 'documentation', flexDirection: 'column' },

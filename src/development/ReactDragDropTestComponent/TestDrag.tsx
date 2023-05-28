@@ -1,7 +1,7 @@
 import { DraggableContextProvider } from '@/ReactDragDrop/DraggableContext/DraggableContext';
 import React, { lazy } from 'react';
 import { testComponentProps } from './TestComponent';
-import DroppableTable from '@/ReactDragDrop/DraggableTable/DraggableTable';
+import DraggableTable from '@/ReactDragDrop/DraggableTable/DraggableTable';
 import TestAddComponent from './TestAddComponent';
 import { tableElements } from './tableElements';
 const Component = lazy(
@@ -37,7 +37,7 @@ function ContextTestDrag() {
           >
             <h1>{table.tableId}</h1>
             <div style={{ backgroundColor: '#3A94F6' }}>
-              <DroppableTable
+              <DraggableTable
                 tableId={table.tableId}
                 action={table.action}
                 elements={table.elements}

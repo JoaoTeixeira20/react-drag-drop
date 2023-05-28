@@ -11,8 +11,13 @@ type testAddComponentProps = {
 };
 
 function TestAddComponent(props: testAddComponentProps) {
-  const { defaultComponentProps, addElementWithId, setElements } =
-    useContext(DraggableContext);
+  const {
+    defaultComponentProps,
+    addElementWithId,
+    setElements,
+    hightlightComponentsLimits,
+    setHightlightComponentsLimits,
+  } = useContext(DraggableContext);
   const [inputs, setInputs] = useState<
     Record<string | number | symbol, unknown>
   >(defaultComponentProps || {});
@@ -42,6 +47,10 @@ function TestAddComponent(props: testAddComponentProps) {
         }))
       );
   };
+
+  const handleHightlightComponentsLimits = () => {
+    setHightlightComponentsLimits(prev => !prev);
+  }
 
   return (
     <div>
@@ -73,6 +82,10 @@ function TestAddComponent(props: testAddComponentProps) {
           <option value="row">row</option>
           <option value="column">column</option>
         </select>
+      </div>
+      <div>
+        <label>highlight elements limits</label>
+        <input type="checkbox" onChange={handleHightlightComponentsLimits} checked={hightlightComponentsLimits}></input>
       </div>
     </div>
   );

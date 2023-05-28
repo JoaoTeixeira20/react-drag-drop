@@ -44,6 +44,8 @@ export type DraggableContextProps<T> = {
   >;
   isDragging: string | null;
   setIsDragging: Dispatch<SetStateAction<string | null>>;
+  hightlightComponentsLimits: boolean;
+  setHightlightComponentsLimits: Dispatch<SetStateAction<boolean>>;
   selectedElement: idType<T> | null;
   setSelectedElement: Dispatch<SetStateAction<idType<T> | null>>;
   selectElement: (id: string | null) => void;
@@ -67,6 +69,7 @@ const DraggableContextProvider = <T,>(
   const [elements, setElements] = useState<idType<T>[]>([]);
   const [isHovering, setIsHovering] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<string | null>(null);
+  const [hightlightComponentsLimits, setHightlightComponentsLimits] = useState<boolean>(false);
   const [hoveredElementSize, setHoveredElementSize] = useState<{
     width: number;
     height: number;
@@ -129,6 +132,8 @@ const DraggableContextProvider = <T,>(
     setIsHovering,
     isDragging,
     setIsDragging,
+    hightlightComponentsLimits,
+    setHightlightComponentsLimits,
     hoveredElementSize,
     setHoveredElementSize,
     selectedElement,

@@ -1,8 +1,8 @@
 import DraggableComponent, {
   draggableComponentProps,
 } from './ReactDragDrop/DraggableComponent/DraggableComponent';
-import DroppableTable, {
-  droppableTable,
+import DraggableTable, {
+  draggableTableProps,
 } from './ReactDragDrop/DraggableTable/DraggableTable';
 import {
   DraggableContext,
@@ -18,11 +18,11 @@ import {
 
 export {
   DraggableComponent,
-  DroppableTable,
+  DraggableTable,
   DraggableContext,
   DraggableContextProvider,
   draggableComponentProps,
-  droppableTable,
+  draggableTableProps,
   DraggableContextProps,
   DraggableContextProviderProps,
   actionType,

@@ -40,7 +40,7 @@ const TrashBasket = (
   </svg>
 );
 
-export type droppableTable<T> = {
+export type draggableTableProps<T> = {
   tableId?: string;
   elements?: T[];
   action: actionType;
@@ -48,7 +48,7 @@ export type droppableTable<T> = {
   deleteElementsOnUnmount?: boolean;
 };
 
-function DroppableTable<T>(props: droppableTable<T>) {
+function DraggableTable<T>(props: draggableTableProps<T>) {
   const tableId = useMemo(() => props.tableId || uuidv4(), []);
   const {
     elements,
@@ -57,6 +57,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
     isDragging,
     selectElement,
     selectedElement,
+    hightlightComponentsLimits,
   } = useContext(DraggableContext);
 
   const transitionElements = useMemo(
@@ -96,7 +97,6 @@ function DroppableTable<T>(props: droppableTable<T>) {
   const transitions = useTransition(transitionElements, {
     key: (element: idType<T>) => element.id,
     update: (element) => ({
-      outlineWidth: element.id === selectedElement?.id ? '2px' : '0px',
       transform:
         element.id === selectedElement?.id
           ? `translateY(6px) scale(1.02)`
@@ -168,7 +168,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
         userSelect: 'none',
       }}
     >
-      {enableDrop && draggedIndex !== 0 && <DroppableSlot tableId={tableId} />}
+      {enableDrop && draggedIndex !== 0 && !(props.action === 'copy') && <DroppableSlot tableId={tableId} />}
       {transitions((style, element, _, index) => (
         <>
           <animated.div
@@ -176,6 +176,9 @@ function DroppableTable<T>(props: droppableTable<T>) {
               display: 'grid',
               position: 'relative',
               zIndex: element.id === selectedElement?.id ? 1 : 0,
+              outlineWidth: hightlightComponentsLimits ? 1 : 0,
+              outlineColor: 'black',
+              outlineStyle: 'solid',
               ...style,
             }}
             data-id={element.id}
@@ -194,7 +197,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
                     ? selectedElement.item
                     : element.item)}
                 >
-                  <DroppableTable
+                  <DraggableTable
                     action={props.action}
                     tableId={element.id}
                     enableDrop={enableDrop}
@@ -219,7 +222,7 @@ function DroppableTable<T>(props: droppableTable<T>) {
           </animated.div>
           {enableDrop &&
             isDragging !== element.id &&
-            index !== draggedIndex - 1 && (
+            index !== draggedIndex - 1 && !(props.action === 'copy') && (
               <DroppableSlot id={element.id} tableId={tableId} />
             )}
         </>
@@ -228,8 +231,8 @@ function DroppableTable<T>(props: droppableTable<T>) {
   );
 }
 
-DroppableTable.defaultProps = {
+DraggableTable.defaultProps = {
   enableDrop: true,
 };
 
-export default DroppableTable;
+export default DraggableTable;

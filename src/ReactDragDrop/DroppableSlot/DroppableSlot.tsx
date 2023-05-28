@@ -10,7 +10,7 @@ import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
 import { animated, useTransition } from '@react-spring/web';
-import DroppableTable from '../DraggableTable/DraggableTable';
+import DraggableTable from '../DraggableTable/DraggableTable';
 import { asyncGetBoundingClientRect, debounce } from '../helpers/helpers';
 
 type DroppableSlotProps = {
@@ -178,11 +178,11 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
               >
                 <Suspense fallback={<div>loading component...</div>}>
                   <BaseDragComponent {...element?.item}>
-                    <DroppableTable
+                    <DraggableTable
                       action={'move'}
                       tableId={element?.id}
                       enableDrop={false}
-                    ></DroppableTable>
+                    ></DraggableTable>
                   </BaseDragComponent>
                 </Suspense>
               </div>
