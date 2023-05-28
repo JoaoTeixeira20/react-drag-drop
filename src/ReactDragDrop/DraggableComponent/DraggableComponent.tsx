@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DraggaBleComponentActive from '../DraggableComponentActive/DraggableComponentActive';
 import { actionType } from '../types/draggableLib.type';
 
-type draggableComponentProps<T> = {
+export type draggableComponentProps<T> = {
   id?: string;
   tableId: string;
   style?: CSSProperties;

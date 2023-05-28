@@ -1,6 +1,6 @@
 {
-  "name": "react-drag-drop",
-  "version": "1.0.0",
+  "name": "phantom-react-dnd",
+  "version": "1.0.1",
   "description": "Tool create drag drop lists",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,7 +1,7 @@
 import { DraggableContextProvider } from '@/ReactDragDrop/DraggableContext/DraggableContext';
 import React, { lazy } from 'react';
 import { testComponentProps } from './TestComponent';
-import DroppableTable from '@/ReactDragDrop/DroppableTable/DroppableTable';
+import DroppableTable from '@/ReactDragDrop/DraggableTable/DraggableTable';
 import TestAddComponent from './TestAddComponent';
 import { tableElements } from './tableElements';
 const Component = lazy(

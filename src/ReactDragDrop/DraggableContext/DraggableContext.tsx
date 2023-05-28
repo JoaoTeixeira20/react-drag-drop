@@ -16,7 +16,7 @@ import { polyfill } from 'mobile-drag-drop';
 import { addIdToElement } from '../helpers/helpers';
 polyfill({});
 
-type DraggableContextProps<T> = {
+export type DraggableContextProps<T> = {
   BaseDragComponent: ComponentType<T>;
   draggedElementSpring: SpringValues<{
     left: number;
@@ -51,7 +51,7 @@ type DraggableContextProps<T> = {
   config?: contextConfigType,
 };
 
-type DraggableContextProviderProps<T> = {
+export type DraggableContextProviderProps<T> = {
   BaseDragComponent: ComponentType<T>;
   defaultComponentProps?: Record<keyof T, unknown>;
   config?: contextConfigType,

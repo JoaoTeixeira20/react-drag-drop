@@ -40,11 +40,12 @@ const TrashBasket = (
   </svg>
 );
 
-type droppableTable<T> = {
+export type droppableTable<T> = {
   tableId?: string;
   elements?: T[];
   action: actionType;
   enableDrop?: boolean;
+  deleteElementsOnUnmount?: boolean;
 };
 
 function DroppableTable<T>(props: droppableTable<T>) {
@@ -76,17 +77,21 @@ function DroppableTable<T>(props: droppableTable<T>) {
     [isDragging]
   );
 
-  useEffect(
-    () =>
-      props.elements &&
+  useEffect(() => {
+    props.elements &&
       setElements((prev) => [
         ...prev,
         ...(props.elements
           ? props.elements.map((el) => addIdToElement<T>(el, tableId))
           : []),
-      ]),
-    []
-  );
+      ]);
+    return () => {
+      props.deleteElementsOnUnmount &&
+        setElements((prev) =>
+          prev.filter((el) => el.tableId !== props.tableId)
+        );
+    };
+  }, []);
 
   const transitions = useTransition(transitionElements, {
     key: (element: idType<T>) => element.id,

@@ -10,7 +10,7 @@ import { DraggableContext } from '../DraggableContext/DraggableContext';
 import { v4 as uuidv4 } from 'uuid';
 
 import { animated, useTransition } from '@react-spring/web';
-import DroppableTable from '../DroppableTable/DroppableTable';
+import DroppableTable from '../DraggableTable/DraggableTable';
 import { asyncGetBoundingClientRect, debounce } from '../helpers/helpers';
 
 type DroppableSlotProps = {
@@ -31,7 +31,6 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
     BaseDragComponent,
     draggedElementSpringApi,
     droppableHighlightSpring,
-    config,
   } = useContext(DraggableContext);
 
   const resizedRef = useRef<HTMLDivElement>(null);
@@ -61,7 +60,8 @@ function DroppableSlot<T>(props: DroppableSlotProps) {
       if (!resizeObserverRef.current) {
         resizeObserverRef.current = new ResizeObserver(
           debounce((entries: ResizeObserverEntry[]) => {
-            const { width, height } = entries[0].contentRect;setHoveredElementSize({ width: width, height: height });
+            const { width, height } = entries[0].contentRect;
+            setHoveredElementSize({ width: width, height: height });
             if (resizedRef.current) {
               asyncGetBoundingClientRect(resizedRef.current).then(
                 ({ x, y }) => {
